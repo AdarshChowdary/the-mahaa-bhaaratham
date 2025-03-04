@@ -136,3 +136,23 @@ export async function getCharacterDetails(name: string): Promise<CharacterDetail
     throw new Error('Failed to fetch character details');
   }
 }
+
+export async function searchCharacters(query: string): Promise<Character[]> {
+  try {
+    const client = await pool.connect()
+    
+    const result = await client.query(`
+      SELECT id, name 
+      FROM characters 
+      WHERE name ILIKE $1
+      ORDER BY name
+    `, [`%${query}%`])
+    
+    client.release()
+    
+    return result.rows
+  } catch (error) {
+    console.error('Failed to search characters:', error)
+    throw new Error('Failed to search characters')
+  }
+}

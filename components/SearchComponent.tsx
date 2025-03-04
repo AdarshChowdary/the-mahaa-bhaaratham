@@ -28,7 +28,7 @@ const SearchComponent = ({
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder={placeholder}
-          className="bg-transparent border border-[#62b6cb] px-10 py-2 w-full placeholder:text-[#62b6cb] text-[#bee9e8] focus:outline-none focus:ring-2 focus:ring-[#62b6cb] transition-all duration-300"
+          className="bg-transparent border border-custom-skyBlue px-10 py-2 w-full placeholder:text-custom-skyBlue text-custom-mint focus:outline-none focus:ring-2 focus:ring-custom-skyBlue transition-all duration-300"
         />
         {searchQuery && (
           <button 
@@ -42,7 +42,13 @@ const SearchComponent = ({
       </div>
       {showResultCount && searchQuery && (
         <p className="text-custom-skyBlue mt-2 text-sm">
-          Found {resultCount} {resultCount === 1 ? resultLabel : `${resultLabel}s`}
+          Found {resultCount} {`${resultLabel}(s)`}
+        </p>
+      )}
+      
+      {showResultCount && searchQuery && resultCount === 0 && (
+        <p className="text-custom-lightBlue mt-2 text-sm">
+          No matches found. Try a different search term.
         </p>
       )}
     </div>

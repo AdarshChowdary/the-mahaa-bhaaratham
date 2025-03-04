@@ -92,7 +92,7 @@ body {
 }
 
 /* Chatbox Styles */
-.chatbox {
+/* .chatbox {
   position: fixed;
   bottom: 20px;
   right: 20px;
@@ -109,7 +109,7 @@ body {
 
 .chatbox-header {
   padding: 12px;
-  background-color: #203a58; /* Custom navy color */
+  background-color: #203a58;
   color: white;
   font-weight: 600;
   text-align: center;
@@ -139,12 +139,12 @@ body {
 }
 
 .chatbox-input:focus {
-  border-color: #62b6cb; /* Custom light blue color */
+  border-color: #62b6cb;
 }
 
 .chatbox-button {
   padding: 8px 12px;
-  background-color: #62b6cb; /* Custom light blue color */
+  background-color: #62b6cb;
   color: white;
   border: none;
   border-radius: 8px;
@@ -153,7 +153,7 @@ body {
 }
 
 .chatbox-button:hover {
-  background-color: #4a9eb3; /* Darker shade of custom light blue */
+  background-color: #4a9eb3;
 }
 
 .chatbox-response {
@@ -162,7 +162,7 @@ body {
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
+} */
 
 @layer utilities {
 
@@ -189,6 +189,16 @@ body {
   .animate-expand {
     animation: expandWidth 1s ease-out 0.8s forwards;
   }
+}
+
+::selection {
+  color: #bee9e8;
+  background: #3C6274;
+}
+
+::-moz-selection {
+  color: #bee9e8;
+  background: #3C6274;
 }
 
 @layer base {

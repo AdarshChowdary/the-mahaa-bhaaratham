@@ -4,7 +4,8 @@ import { Outfit } from "next/font/google"
 import Footer from "./Footer";
 import CustomCursor from "@/components/CustomCursor"
 import { LLMProvider } from "@/lib/LLMContext";
-import MahaabhaaratamChat from "@/components/MahaabhaaratamChat";
+import ReactQueryProvider from "./ReactQueryProvider";
+import ScrollToTop from "@/components/ScrollToTop";
 
 const outfit = Outfit({
   subsets: ['latin'],
@@ -27,14 +28,16 @@ export default function RootLayout({
       <body
         className={`antialiased min-h-screen flex flex-col`}
       >
-        <LLMProvider>
-          <CustomCursor/>
-          <main className="flex-grow">
-            {children}
-          </main>
-          <MahaabhaaratamChat/>
-          <Footer/>
-        </LLMProvider>
+        <ReactQueryProvider>
+          <LLMProvider>
+            <CustomCursor/>
+            <main className="flex-grow">
+              {children}
+            </main>
+            <ScrollToTop/>
+            <Footer/>
+          </LLMProvider>
+        </ReactQueryProvider>
       </body>
     </html>
   );

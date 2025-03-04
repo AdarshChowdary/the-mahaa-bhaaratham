@@ -1,157 +1,265 @@
-'use client'
+'use client';
 
-import { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
-import Link from 'next/link';
-import { getSections } from '@/app/actions/section-description';
-import { Scroll, BookOpen } from 'lucide-react';
-import SearchComponent from '@/components/SearchComponent';
+import React, { useState, useEffect } from 'react';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
+import { useSectionByNumber } from '@/app/hooks/useQueries';
 import { splitIntoParagraphs } from '@/utils/text-utils';
+import BackButton from '@/components/layout/BackButton';
+import PageHeader from '@/components/layout/PageHeader';
+import PageLayout from '@/components/layout/PageLayout';
+import SkeletonLoader from '@/components/description/SkeletonLoader';
+import Pagination from '@/components/Pagination';
+import { formatUrlString } from '@/utils/string-utils';
+import SearchBar from '@/components/description/SearchBar';
+import SectionHeader from '@/components/description/SectionHeader';
+import SectionNavigation from '@/components/description/SectionNavigation';
+import ContentDisplay from '@/components/description/ContentDisplay';
 
-interface DescriptionProps {
-    description: string;
-    section_number: number;
-    sub_parva_name: string;
+interface SearchResult {
+    pageIndex: number;
+    paragraphIndex: number;
+    startIndex: number;
+    endIndex: number;
+    text: string;
 }
-
-// New function to highlight search terms
-const highlightText = (text: string, searchTerm: string) => {
-    if (!searchTerm) return text;
-    
-    const regex = new RegExp(`(${searchTerm})`, 'gi');
-    const parts = text.split(regex);
-    
-    return parts.map((part, index) => {
-        if (part.toLowerCase() === searchTerm.toLowerCase()) {
-            return <mark key={index} className="bg-custom-mint/20 text-custom-mint px-1 rounded">{part}</mark>;
-        }
-        return part;
-    });
-};
 
 export default function Description() {
     const params = useParams();
-    const [descriptionData, setDescriptionData] = useState<DescriptionProps | null>(null);
-    const [isLoading, setIsLoading] = useState(false);
-    const [searchTerm, setSearchTerm] = useState('');
+    const router = useRouter();
+    const searchParams = useSearchParams();
     
+    const sectionNumber = params.description ? Number(params.description) : 0;
+    const pageParam = searchParams.get('page');
+    const currentPage = pageParam ? parseInt(pageParam) - 1 : 0; // Convert to zero-based index internally
+    
+    // Get fromPage from sessionStorage instead of URL
+    const [fromPage, setFromPage] = useState<string>('1');
+    
+    // Search related states
+    const [searchQuery, setSearchQuery] = useState('');
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+    const [currentSearchIndex, setCurrentSearchIndex] = useState(0);
+    
+    // Use the hook to fetch data with caching
+    const { 
+        data: descriptionData, 
+        isLoading, 
+        error 
+    } = useSectionByNumber(sectionNumber);
+    
+    // Split description into pages
+    const paragraphs = descriptionData ? splitIntoParagraphs(descriptionData.description) : [];
+    const paragraphsPerPage = 3;
+    const totalPages = Math.ceil(paragraphs.length / paragraphsPerPage);
+
+    // Get the paragraphs for the current page
+    const startIndex = currentPage * paragraphsPerPage;
+    const endIndex = startIndex + paragraphsPerPage;
+    const currentPageParagraphs = paragraphs.slice(startIndex, endIndex);
+
+    // Handle errors
+    if (error) {
+        console.error('Error fetching section description:', error);
+    }
+
+    // Retrieve fromPage from sessionStorage on component mount
     useEffect(() => {
-        if (params.description) {
-            fetchDescription(Number(params.description));
+        const storedFromPage = sessionStorage.getItem('fromPage');
+        if (storedFromPage) {
+            setFromPage(storedFromPage);
         }
-    }, [params.description]);
-    
-    const fetchDescription = async (sectionNumber: number) => {
-        setIsLoading(true);
-        try {
-            const data = await getSections();
-            const sectionData = data.find(
-                section => section.section_number === sectionNumber
-            );
-            setDescriptionData(sectionData || null);
-        } catch (err) {
-            console.error('Fetch error:', err);
-        } finally {
-            setIsLoading(false);
+    }, []);
+
+    // This effect handles URL changes and ensures we're on a valid page
+    useEffect(() => {
+        if (totalPages > 0 && currentPage >= totalPages) {
+            navigateToPage(totalPages - 1);
+        }
+    }, [totalPages, currentPage]);
+
+    const navigateToPage = (pageNumber: number) => {
+        // Create the new URL with updated query parameters
+        const params = new URLSearchParams(searchParams.toString());
+        params.set('page', (pageNumber + 1).toString()); // Convert to 1-based for URL
+                
+        // Use Next.js router to navigate while preserving other params
+        router.push(`?${params.toString()}`);
+    };
+
+    // Navigate to previous or next section
+    const navigateToSection = (direction: 'prev' | 'next') => {
+        if (!descriptionData) return;
+        
+        const targetSectionNumber = direction === 'prev' 
+            ? sectionNumber - 1 
+            : sectionNumber + 1;
+            
+        // Save current page to session storage before navigating
+        sessionStorage.setItem('fromPage', fromPage);
+        
+        // Navigate to the new section, reset to page 1
+        router.push(`/mahaabhaaratham/parvas/${formatUrlString(params['sub-parvas'] as string)}/${formatUrlString(params.sections as string)}/${targetSectionNumber}?page=1`);
+    };
+
+    const performSearch = (query: string) => {
+        if (!descriptionData || query.trim() === '') return;
+
+        const results: SearchResult[] = [];
+        const lowercaseQuery = query.toLowerCase();
+
+        paragraphs.forEach((paragraph, paragraphIndex) => {
+            const pageIndex = Math.floor(paragraphIndex / paragraphsPerPage);
+            let startPos = 0;
+            let position = paragraph.toLowerCase().indexOf(lowercaseQuery, startPos);
+
+            while (position !== -1) {
+                results.push({
+                    pageIndex,
+                    paragraphIndex,
+                    startIndex: position,
+                    endIndex: position + query.length,
+                    text: paragraph.substring(
+                        Math.max(0, position - 30), 
+                        Math.min(paragraph.length, position + query.length + 30)
+                    )
+                });
+                startPos = position + 1;
+                position = paragraph.toLowerCase().indexOf(lowercaseQuery, startPos);
+            }
+        });
+
+        setSearchResults(results);
+        setCurrentSearchIndex(0);
+        
+        // Navigate to the first result if there are any
+        if (results.length > 0) {
+            navigateToPage(results[0].pageIndex);
         }
     };
 
-    const renderSkeletonLoader = () => (
-        <div className="max-w-3xl mx-auto px-4">
-            <div className="bg-gray-800/30 p-8 rounded-lg shadow-lg backdrop-blur-sm animate-pulse border border-gray-700/50">
-                <div className="h-8 bg-gray-700/50 mb-4 w-1/2 rounded"></div>
-                <div className="h-4 bg-gray-700/50 mb-8 w-1/4 rounded"></div>
-                <div className="space-y-4">
-                    <div className="h-4 bg-gray-700/50 w-full rounded"></div>
-                    <div className="h-4 bg-gray-700/50 w-full rounded"></div>
-                    <div className="h-4 bg-gray-700/50 w-3/4 rounded"></div>
-                </div>
-            </div>
-        </div>
-    );
+    const navigateToSearchResult = (direction: 'next' | 'prev') => {
+        if (searchResults.length === 0) return;
+    
+        let newIndex;
+        if (direction === 'next') {
+            newIndex = (currentSearchIndex + 1) % searchResults.length;
+        } else {
+            newIndex = (currentSearchIndex - 1 + searchResults.length) % searchResults.length;
+        }
+    
+        setCurrentSearchIndex(newIndex);
+        navigateToPage(searchResults[newIndex].pageIndex);
+    
+        // Scroll to the current match
+        setTimeout(() => {
+            const paragraphElement = document.querySelector(
+                `p[data-paragraph-index="${searchResults[newIndex].paragraphIndex}"]`
+            );
+            if (paragraphElement) {
+                paragraphElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }, 100);
+    };
+
+    const handleSearchQueryChange = (value: string) => {
+        setSearchQuery(value);
+        if (value.trim() === '') {
+            setSearchResults([]);
+            return;
+        }
+        performSearch(value);
+    };
+
+    const clearSearch = () => {
+        setSearchQuery('');
+        setSearchResults([]);
+        setIsSearchOpen(false);
+    };
+    
+    const toggleSearch = () => {
+        setIsSearchOpen(!isSearchOpen);
+    };
+
+    // Build the back URL with the correct page number from the sections page
+    const backUrl = descriptionData ? 
+        `/mahaabhaaratham/parvas/${formatUrlString(params['sub-parvas'] as string)}/${formatUrlString(params.sections as string)}/page/${fromPage}` :
+        `/mahaabhaaratham/parvas/${formatUrlString(params['sub-parvas'] as string)}/${formatUrlString(params.sections as string)}/page/1`;
 
     const renderDescription = () => {
         if (!descriptionData) return null;
 
-        const paragraphs = splitIntoParagraphs(descriptionData.description);
-
         return (
             <div className="max-w-3xl mx-auto px-4">
-                {/* Search Bar */}
-                <div className="mb-6">
-                    <SearchComponent
-                        searchQuery={searchTerm}
-                        setSearchQuery={setSearchTerm}
-                        placeholder="Search in description..."
-                    />
-                </div>
-
+                
                 <div className="bg-gray-800/30 p-8 rounded-lg shadow-lg backdrop-blur-sm border border-gray-700/50 relative overflow-hidden">
                     {/* Decorative corner elements */}
                     <div className="absolute top-0 left-0 w-16 h-16 border-t-2 border-l-2 border-custom-mint/30 rounded-tl-lg"></div>
                     <div className="absolute top-0 right-0 w-16 h-16 border-t-2 border-r-2 border-custom-mint/30 rounded-tr-lg"></div>
                     <div className="absolute bottom-0 left-0 w-16 h-16 border-b-2 border-l-2 border-custom-mint/30 rounded-bl-lg"></div>
                     <div className="absolute bottom-0 right-0 w-16 h-16 border-b-2 border-r-2 border-custom-mint/30 rounded-br-lg"></div>
-                    
+
                     <div className="relative z-10">
-                        <div className="flex items-center gap-2 mb-2">
-                            <BookOpen className="w-5 h-5 text-custom-mint" />
-                            <h2 className="text-2xl font-semibold text-custom-mint">
-                                Section {descriptionData.section_number}
-                            </h2>
-                        </div>
+                        <SectionHeader 
+                            sectionNumber={descriptionData.section_number}
+                            subParvaName={descriptionData.sub_parva_name}
+                            isSearchOpen={isSearchOpen}
+                            onToggleSearch={toggleSearch}
+                        />
                         
-                        <div className="flex items-center gap-2 mb-6">
-                            <Scroll className="w-4 h-4 text-custom-skyBlue" />
-                            <p className="text-custom-skyBlue font-extralight">
-                                {descriptionData.sub_parva_name}
-                            </p>
-                        </div>
-                        
-                        <div className="prose prose-invert max-w-none">
-                            {paragraphs.map((paragraph, index) => (
-                                <p 
-                                    key={index} 
-                                    className={`text-gray-300 text-justify leading-relaxed mb-4 ${
-                                        index === 0 ? 'first-letter:text-4xl first-letter:font-bold first-letter:text-custom-skyBlue first-letter:mr-1 first-letter:float-left' : ''
-                                    }`}
-                                >
-                                    {highlightText(paragraph, searchTerm)}
-                                </p>
-                            ))}
-                        </div>
+                        {/* Search bar and related components */}
+                        {isSearchOpen && (
+                            <SearchBar 
+                                searchQuery={searchQuery}
+                                searchResults={searchResults}
+                                currentSearchIndex={currentSearchIndex}
+                                onQueryChange={handleSearchQueryChange}
+                                onClearSearch={clearSearch}
+                                onNavigateResult={navigateToSearchResult}
+                            />
+                        )}
+
+                        {/* Content display with search highlighting */}
+                        <ContentDisplay 
+                            paragraphs={currentPageParagraphs}
+                            startIndex={startIndex}
+                            searchQuery={searchQuery}
+                            searchResults={searchResults}
+                            currentSearchIndex={currentSearchIndex}
+                        />
+
+                        {/* Pagination */}
+                        <Pagination
+                            currentPage={currentPage + 1} // Convert from 0-based to 1-based for display
+                            totalPages={totalPages}
+                            onPageChange={(page) => navigateToPage(page - 1)} // Convert from 1-based to 0-based for internal handling
+                            queryParam="page"
+                        />
                     </div>
                 </div>
+                
+                {/* Section Navigation buttons (bottom) */}
+                <SectionNavigation 
+                    sectionNumber={sectionNumber} 
+                    onNavigate={navigateToSection} 
+                />
             </div>
         );
     };
 
     return (
-        <div className="min-h-screen bg-custom-navy text-custom-mint py-10 relative">
-                        
-            <div className="max-w-4xl mx-auto px-4 relative">
-                <Link 
-                    href={`/mahaabhaaratham/parvas/${params['sub-parvas']}/${params.sections}`}
-                    className="flex items-center gap-2 text-lg font-extralight mb-8 hover:text-custom-skyBlue transition-colors duration-300 group"
-                >
-                    <span className="hover-underline-animation">← Back to Sections</span>
-                </Link>
+        <PageLayout>
+            <BackButton
+                href={backUrl}
+                label='Back to Sections'
+            />
 
-                <div className="text-center mb-12">
-                    <div className="mb-8 relative">
-                        <h1 className="text-4xl font-bold text-custom-mint mb-2">
-                            Section Description
-                        </h1>
-                        <div className="flex items-center justify-center gap-4 mt-4">
-                            <div className="h-[2px] w-24 bg-gradient-to-r from-transparent via-custom-skyBlue to-transparent"></div>
-                            <span className="text-custom-skyBlue font-extralight text-2xl tracking-wider">विवरणम्</span>
-                            <div className="h-[2px] w-24 bg-gradient-to-r from-transparent via-custom-skyBlue to-transparent"></div>
-                        </div>  
-                    </div>
-                </div>
+            <PageHeader
+                title="Section Description"
+                subtitle='विवरणम्'
+            />
 
-                {isLoading ? renderSkeletonLoader() : renderDescription()}
-            </div>
-        </div>
+            {isLoading ? <SkeletonLoader/> : renderDescription()}
+        </PageLayout>
     );
 }

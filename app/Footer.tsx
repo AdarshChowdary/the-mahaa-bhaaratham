@@ -1,8 +1,8 @@
 export default function Footer () {
     return (
-        <footer className="w-full bg-[#1b4965] py-6 px-4">
+        <footer className="w-full bg-custom-navy py-6 px-4">
             <div className="max-w-4xl mx-auto flex flex-col items-center gap-4">
-                <p className="text-[#bee9e8] text-lg">
+                <p className="text-custom-mint text-lg">
                     © 2024 The Fifth Veda. All rights reserved.
                 </p>
                 <div className="flex gap-5 items-center">
@@ -10,7 +10,7 @@ export default function Footer () {
                         href="https://instagram.com/the_fifth_veda_"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="flex items-center text-base gap-2 text-[#62b6cb] hover:text-[#bee9e8] transition duration-200"
+                        className="flex items-center text-base gap-2 text-custom-skyBlue hover:text-custom-mint transition duration-200"
                         aria-label="Follow us on Instagram" 
                     >
                         <svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

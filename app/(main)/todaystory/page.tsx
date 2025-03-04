@@ -12,7 +12,7 @@ export default function StoryPage() {
     <main className="min-h-screen w-full bg-custom-navy flex flex-col items-center px-4 relative overflow-hidden py-10">
       
       {/* Background Elements */}
-      <div className="absolute top-0 left-0 w-64 h-64 bg-[#62b6cb]/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2 animate-pulse" />
+      <div className="absolute top-0 left-0 w-64 h-64 bg-custom-skyBlue/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2 animate-pulse" />
 
       <div className="max-w-4xl mx-auto z-10">
         {/* Back Link */}
@@ -26,19 +26,19 @@ export default function StoryPage() {
         {/* Title Section */}
         <div className="text-center mb-12 animate-fade-in">
           <div className="mb-8">
-            <h1 className="text-4xl font-bold text-[#bee9e8] mb-2">
+            <h1 className="text-4xl font-bold text-custom-mint mb-2">
               Today&apos;s Story
             </h1>
             <div className="flex items-center justify-center gap-4 mt-4">
-              <div className="h-[2px] w-16 bg-gradient-to-r from-transparent via-[#62b6cb] to-transparent"></div>
-              <span className="text-[#62b6cb] font-extralight text-2xl">महाभारतं की कहानी</span>
-              <div className="h-[2px] w-16 bg-gradient-to-r from-transparent via-[#62b6cb] to-transparent"></div>
+              <div className="h-[2px] w-16 bg-gradient-to-r from-transparent via-custom-skyBlue to-transparent"></div>
+              <span className="text-custom-skyBlue font-extralight text-2xl">महाभारतं की कहानी</span>
+              <div className="h-[2px] w-16 bg-gradient-to-r from-transparent via-custom-skyBlue to-transparent"></div>
             </div>
           </div>
         </div>
 
         {/* Story Content */}
-        <div className="flex flex-col text-[#62b6cb] text-lg font-extralight max-w-5xl m-auto text-justify px-4 gap-5 animate-fade-in">
+        <div className="flex flex-col text-custom-skyBlue text-lg font-extralight max-w-5xl m-auto text-justify px-4 gap-5 animate-fade-in">
           {paragraphs.map((paragraph, index) => (
             <p key={index}>{paragraph}</p>
           ))}

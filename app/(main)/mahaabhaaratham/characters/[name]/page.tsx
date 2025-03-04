@@ -1,60 +1,39 @@
+// app/mahaabhaaratham/characters/[name]/page.tsx
 'use client'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useParams } from 'next/navigation'
-import Link from 'next/link'
-import { getCharacterDetails } from '@/app/actions/characters'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Users, Heart, Baby, UserCircle, Sparkles } from 'lucide-react'
 import Image from 'next/image'
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { VisuallyHidden } from '@/components/ui/visually-hidden'
 import { Card } from '@/components/ui/card'
-
-interface CharacterDetailsProps {
-  id: number;
-  name: string;
-  image?: string;
-  description: string;
-  parents: string;
-  wives?: string;
-  children?: string;
-  husband?: string;
-  gender?: string;
-}
+import { useCharacterDetails } from '@/app/hooks/useCharacterQueries'
+import BackButton from '@/components/layout/BackButton'
 
 export default function CharacterDetails() {
-  const [character, setCharacter] = useState<CharacterDetailsProps | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
   const params = useParams()
   const [isImageOpen, setIsImageOpen] = useState(false)
   
   const characterName = (params.name as string).replace(/-/g, ' ')
 
-  useEffect(() => {
-    fetchCharacterDetails()
-  }, [characterName])
+  // TanStack Query hook for character details
+  const { 
+    data: character,
+    isLoading,
+    error: queryError
+  } = useCharacterDetails(characterName)
 
-  const fetchCharacterDetails = async () => {
-    setIsLoading(true)
-    try {
-      const data = await getCharacterDetails(characterName)
-      setCharacter(data)
-      setError(null)
-    } catch (err) {
-      console.error('Fetch error:', err)
-      setError('Failed to load character details')
-      setCharacter(null)
-    } finally {
-      setIsLoading(false)
-    }
-  }
+  const error = queryError ? 'Failed to load character details' : null
 
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-custom-navy via-custom-navy/95 to-custom-navy text-custom-mint p-8">
         <div className="max-w-4xl mx-auto">
-          <div className="h-7 w-40 bg-custom-skyBlue/20 backdrop-blur-sm animate-pulse mb-8"></div>
+          <BackButton
+            href='/mahaabhaaratham/characters'
+            label='Back to Characters'
+          />
           <div className="grid gap-8">
             {[...Array(4)].map((_, i) => (
               <div key={i} className="h-48 bg-custom-skyBlue/10 rounded-none backdrop-blur-sm animate-pulse"></div>
@@ -69,10 +48,10 @@ export default function CharacterDetails() {
     return (
       <div className="min-h-screen bg-gradient-to-br from-custom-navy via-custom-navy/95 to-custom-navy text-custom-mint p-8">
         <div className="max-w-7xl mx-auto">
-          <Link href="/mahaabhaaratham" className="group inline-flex items-center gap-2 mb-8 text-lg font-light">
-            <span className="transition-transform group-hover:-translate-x-1">←</span>
-            <span className="hover-underline-animation">Back to Characters</span>
-          </Link>
+          <BackButton
+            href='/mahaabhaaratham/characters'
+            label='Back to Characters'
+          />
           <Alert className="bg-red-500/20 backdrop-blur-md border-red-500/50">
             <AlertDescription>{error || 'Character not found'}</AlertDescription>
           </Alert>
@@ -89,9 +68,10 @@ export default function CharacterDetails() {
 
       <div className="max-w-4xl mx-auto relative">
         {/* Navigation */}
-        <Link href="/mahaabhaaratham/characters" className="inline-flex items-center gap-2 mb-12 text-lg font-light">
-          <span className="hover-underline-animation">← Back to Characters</span>
-        </Link>
+        <BackButton
+          href='/mahaabhaaratham/characters'
+          label='Back to Characters'
+        />
 
         {/* Hero Section */}
         <div className="relative mb-12">

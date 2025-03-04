@@ -3,67 +3,86 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import Link from 'next/link'
-import { getCharactersGrouped } from '@/app/actions/characters'
-import { getCharactersByLetter } from '@/app/actions/characters'
 import { Alert, AlertDescription } from '@/components/ui/alert'
-import AlphabetNavigation from '@/components/AlphabetNavigation'
-import CharacterList from '@/components/CharacterList'
-import { Shuffle, X } from 'lucide-react'
-import SearchComponent from '@/components/SearchComponent'
+import { X } from 'lucide-react'
 import { Character, GroupedCharacters } from '@/types/characters'
 
+// Import components
+import PageLayout from '@/components/layout/PageLayout'
+import BackButton from '@/components/layout/BackButton'
+import PageHeader from '@/components/layout/PageHeader'
+import SearchSection from '@/components/layout/SearchSection'
+import CharacterContent from '@/components/characters/CharacterContent'
+
+// Import query hooks
+import { useGroupedCharacters, useSearchCharacters } from '@/app/hooks/useCharacterQueries'
 
 export default function Characters() {
-  const [charactersData, setCharactersData] = useState<GroupedCharacters>({})
+  // TanStack Query hooks
+  const { 
+    data: charactersData = {}, 
+    isLoading 
+  } = useGroupedCharacters()
+  
   const [selectedLetter, setSelectedLetter] = useState<string | null>(null)
   const [showAlert, setShowAlert] = useState(false)
   const [currentLetter, setCurrentLetter] = useState('')
   const [isShuffling, setIsShuffling] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('')
   const router = useRouter()
+
+  // Search with TanStack Query
+  const { 
+    data: searchResults = [], 
+    isLoading: isSearching,
+    error: searchQueryError
+  } = useSearchCharacters(debouncedSearchQuery)
+
+  const searchError = searchQueryError ? 'Failed to search characters' : null
 
   const fullAlphabet = Array.from('ABCDEFGHIJKLMNOPQRSTUVWXYZ')
 
+  // Debounce search to avoid too many requests
   useEffect(() => {
-    fetchCharacters()
-  }, [])
+    const timer = setTimeout(() => {
+      if (searchQuery.length >= 2) {
+        setDebouncedSearchQuery(searchQuery)
+      } else {
+        setDebouncedSearchQuery('')
+      }
+    }, 300)
 
-  const fetchCharacters = async () => {
-    setIsLoading(true)
-    try {
-      const data = await getCharactersGrouped()
-      setCharactersData(data)
-    } catch (err) {
-      console.error('Fetch error:', err)
-    } finally {
-      setIsLoading(false)
-    }
-  }
+    return () => clearTimeout(timer)
+  }, [searchQuery])
 
-  const filterAndGroupCharacters = (characters: GroupedCharacters, query: string): GroupedCharacters => {
-    if (!query) return characters
-
-    const filtered: GroupedCharacters = {}
+  // Convert search results to grouped format when search is active
+  const getDisplayedCharacters = (): GroupedCharacters => {
+    if (!debouncedSearchQuery) return charactersData
     
-    Object.entries(characters).forEach(([letter, data]) => {
-      const filteredCharacters = data.characters.filter(char =>
-        char.name.toLowerCase().includes(query.toLowerCase())
-      )
+    if (searchResults.length === 0) return {}
+    
+    // Group search results by their first letter
+    const grouped: GroupedCharacters = {}
+    
+    searchResults.forEach(character => {
+      const letter = character.name.charAt(0).toUpperCase()
       
-      if (filteredCharacters.length > 0) {
-        filtered[letter] = {
-          characters: filteredCharacters,
-          total: filteredCharacters.length
+      if (!grouped[letter]) {
+        grouped[letter] = {
+          characters: [],
+          total: 0
         }
       }
+      
+      grouped[letter].characters.push(character)
+      grouped[letter].total += 1
     })
     
-    return filtered
+    return grouped
   }
 
-  const groupedCharacters = filterAndGroupCharacters(charactersData, searchQuery)
+  const displayedCharacters = getDisplayedCharacters()
 
   const handleCharacterClick = (character: Character) => {
     const formattedName = character.name.toLowerCase().replace(/\s+/g, '-')
@@ -94,109 +113,74 @@ export default function Characters() {
   }
 
   const handleViewAll = async (letter: string) => {
-    setIsLoading(true)
-    try {
-      const allCharacters = await getCharactersByLetter(letter)
-      setCharactersData(prev => ({
-        ...prev,
-        [letter]: {
-          characters: allCharacters,
-          total: allCharacters.length
-        }
-      }))
-    } catch (err) {
-      console.error('Fetch error:', err)
-    } finally {
-      setIsLoading(false)
+    router.push(`/mahaabhaaratham/characters/letter/${letter}`)
+  }
+
+  const handleSetSearchQuery = (query: string) => {
+    setSearchQuery(query)
+    if (!query) {
+      setDebouncedSearchQuery('')
     }
+    setSelectedLetter(null)
   }
 
   return (
-    <div className="min-h-screen bg-custom-navy text-custom-mint py-10">
-      <div className="max-w-4xl mx-auto px-4">
-        <Link 
-          href="/mahaabhaaratham"
-          className="hover-underline-animation mb-8 inline-block text-lg font-extralight"
-        >
-          ← Back to The Mahaa Bhaaratham
-        </Link>
+    <PageLayout>
+      <BackButton 
+        href="/mahaabhaaratham" 
+        label="Back to The Mahaa Bhaaratham" 
+      />
 
-        {/* Character Header */}
-        <div className="text-center mb-12">
-            <div className="mb-8">
-                <h1 className="text-4xl font-bold text-[#bee9e8] mb-2">
-                    The Mahaa Bhaaratham Characters
-                </h1>
-                <div className="flex items-center justify-center gap-4 mt-4">
-                    <div className="h-[2px] w-16 bg-gradient-to-r from-transparent via-[#62b6cb] to-transparent"></div>
-                    <span className="text-[#62b6cb] font-extralight text-2xl">महाभारतं के पात्र</span>
-                <div className="h-[2px] w-16 bg-gradient-to-r from-transparent via-[#62b6cb] to-transparent"></div>
-            </div>
+      <PageHeader
+        title="The Mahaa Bhaaratham Characters"
+        subtitle="महाभारतं के पात्र"
+      />
+
+      <SearchSection
+        searchQuery={searchQuery}
+        setSearchQuery={handleSetSearchQuery}
+        placeholder="Search characters..."
+        showResultCount={!!debouncedSearchQuery && !isSearching && !searchError && searchResults.length > 0}
+        resultCount={searchResults.length}
+        resultLabel="character"
+        className="mb-8 relative w-full max-w-sm mx-auto"
+      />
+
+      {/* Alert Notification */}
+      {showAlert && (
+        <div className="fixed top-4 right-4 z-50 animate-fade-in">
+          <Alert className="bg-custom-skyBlue text-custom-navy border-none shadow-lg rounded-none">
+            <AlertDescription className="flex items-center justify-between">
+              <span>No characters found starting with <span className='font-bold'>&apos;{currentLetter}&apos;</span></span>
+              <button 
+                onClick={() => setShowAlert(false)}
+                className="ml-4 hover:opacity-75 transition-opacity"
+              >
+                <X size={18} />
+              </button>
+            </AlertDescription>
+          </Alert>
         </div>
+      )}
 
-        {/* Search Component */}
-        <div className="mb-8 relative w-full max-w-sm mx-auto flex items-center">
-          <SearchComponent
-            searchQuery={searchQuery}
-            setSearchQuery={(value) => {
-              setSearchQuery(value);
-              setSelectedLetter(null);
-            }}
-            placeholder="Search characters..."
-            className="mb-8 relative w-full max-w-sm mx-auto"
-          />
-        </div>
-
-        {/* Random Character Button */}
-        <button
-            onClick={handleRandomCharacter}
-            disabled={isShuffling}
-            className={`mb-8 px-6 py-3 bg-[#62b6cb] text-[#1b4965]
-                flex items-center gap-2 mx-auto hover:bg-[#bee9e8] transition-all
-                ${isShuffling ? 'opacity-75 cursor-not-allowed' : 'hover:scale-105'}`}
-        >
-            <Shuffle className={`w-5 h-5 ${isShuffling ? 'animate-spin' : ''}`} />
-            {isShuffling ? 'Selecting...' : 'Random Character'}
-        </button>
-
-        {/* Alert Notification */}
-        {
-            showAlert && (
-                <div className="fixed top-4 right-4 z-50 animate-fade-in">
-                    <Alert className="bg-[#62b6cb] text-[#1b4965] border-none shadow-lg rounded-none">
-                        <AlertDescription className="flex items-center justify-between">
-                            <span>No characters found starting with <span className='font-bold'>&apos;{currentLetter}&apos;</span></span>
-                            <button 
-                                onClick={() => setShowAlert(false)}
-                                className="ml-4 hover:opacity-75 transition-opacity"
-                            >
-                                <X size={18} />
-                            </button>
-                        </AlertDescription>
-                    </Alert>
-                </div>
-            )
-        }
-
-        {/* Alphabet Navigation */}
-        <AlphabetNavigation
-          fullAlphabet={fullAlphabet}
-          selectedLetter={selectedLetter}
-          groupedCharacters={groupedCharacters}
-          setSelectedLetter={setSelectedLetter}
-          setShowAlert={setShowAlert}
-          setCurrentLetter={setCurrentLetter}
-        />
-
-        {/* Character List */}
-        <CharacterList
-          groupedCharacters={groupedCharacters}
-          onCharacterClick={handleCharacterClick}
-          onViewAll={handleViewAll}
-          isLoading={isLoading}
-        />
-        </div>
-      </div>
-    </div>
+      <CharacterContent
+        isSearching={isSearching}
+        searchQuery={debouncedSearchQuery}
+        searchError={searchError}
+        searchResults={searchResults}
+        displayedCharacters={displayedCharacters}
+        charactersData={charactersData}
+        isLoading={isLoading}
+        isShuffling={isShuffling}
+        selectedLetter={selectedLetter}
+        fullAlphabet={fullAlphabet}
+        onCharacterClick={handleCharacterClick}
+        onRandomCharacter={handleRandomCharacter}
+        onViewAll={handleViewAll}
+        setSelectedLetter={setSelectedLetter}
+        setShowAlert={setShowAlert}
+        setCurrentLetter={setCurrentLetter}
+      />
+    </PageLayout>
   )
 }
