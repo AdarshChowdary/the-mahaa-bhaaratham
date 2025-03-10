@@ -141,9 +141,9 @@ const SectionsHeader = ({
                 Sections
             </h1>
             <div className="flex items-center justify-center gap-4 mt-4">
-                <div className="h-[2px] w-16 bg-gradient-to-r from-transparent via-custom-skyBlue to-transparent"></div>
+                <div className="h-[2px] w-16 bg-linear-to-r from-transparent via-custom-skyBlue to-transparent"></div>
                 <span className="text-custom-skyBlue font-extralight text-2xl">अध्यायाः</span>
-                <div className="h-[2px] w-16 bg-gradient-to-r from-transparent via-custom-skyBlue to-transparent"></div>
+                <div className="h-[2px] w-16 bg-linear-to-r from-transparent via-custom-skyBlue to-transparent"></div>
             </div>
             <p className="text-custom-skyBlue mt-4 max-w-2xl mx-auto text-lg font-light">
                 Explore <span className="font-semibold italic">{totalSections}</span> sections{' '}
@@ -175,7 +175,7 @@ const SkeletonLoader = ({ count }: { count: number }) => (
         {[...Array(count)].map((_, index) => (
             <div 
                 key={index}
-                className="bg-gray-800 bg-opacity-30 p-6 animate-pulse h-24"
+                className="bg-[#1f29374d] bg-opacity-30 p-6 animate-pulse h-24"
             />
         ))}
     </div>

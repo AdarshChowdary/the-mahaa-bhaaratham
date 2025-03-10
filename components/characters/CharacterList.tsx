@@ -38,7 +38,7 @@ const CharacterList = ({
   if (Object.keys(groupedCharacters).length === 0) {
     return (
       <div className="text-center py-8">
-        <p className="text-xl text-custom-lightBlue">No characters found</p>
+        <p className="text-xl text-custom-light-blue">No characters found</p>
       </div>
     );
   }
@@ -55,7 +55,7 @@ const CharacterList = ({
             id={`section-${letter}`}
             className="mb-8 text-left"
           >
-            <span className="flex items-center text-2xl font-bold text-custom-skyBlue mb-4">
+            <span className="flex items-center text-2xl font-bold text-custom-sky-blue mb-4">
               <MaceIcon variant={0}/>{letter}
             </span>
             
@@ -64,7 +64,7 @@ const CharacterList = ({
                 <button
                   key={character.id}
                   onClick={() => onCharacterClick(character)}
-                  className="p-4 text-left hover:bg-custom-skyBlue hover:text-custom-navy transition-colors duration-300"
+                  className="p-4 text-left hover:bg-custom-sky-blue hover:text-custom-navy transition-colors duration-300"
                 >
                   {character.name}
                 </button>
@@ -73,7 +73,7 @@ const CharacterList = ({
               {hasMore && (
                 <button
                   onClick={() => handleViewAll(letter)}
-                  className="p-4 text-left text-custom-skyBlue hover:bg-custom-skyBlue hover:text-custom-navy transition-colors duration-300"
+                  className="p-4 text-left text-custom-sky-blue hover:bg-custom-sky-blue hover:text-custom-navy transition-colors duration-300"
                 >
                   View all ({total})
                 </button>

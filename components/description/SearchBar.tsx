@@ -37,17 +37,17 @@ const SearchBar: React.FC<SearchBarProps> = ({
 
     return (
         <div className="mb-6">
-            <div className="bg-custom-navy/95 backdrop-blur-sm p-3 rounded-none shadow-lg ring-1 ring-custom-skyBlue/20">
+            <div className="bg-custom-navy/95 backdrop-blur-xs p-3 rounded-none shadow-lg ring-1 ring-custom-skyBlue/20">
                 {/* Search Bar & Close Button Row */}
                 <div className="flex flex-row sm:items-center gap-3 w-full">
-                    <div className="relative flex-grow">
+                    <div className="relative grow">
                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-custom-blue w-4 h-4" />
                         <input
                             type="text"
                             value={searchQuery}
                             onChange={handleQueryChange}
                             placeholder="Search in description..."
-                            className="w-full bg-custom-navy text-custom-lightBlue rounded-none pl-10 pr-10 py-2 placeholder:text-custom-skyBlue border border-custom-blue/30 focus:border-custom-skyBlue focus:ring-2 focus:ring-custom-skyBlue focus:outline-none"
+                            className="w-full bg-custom-navy text-custom-lightBlue rounded-none pl-10 pr-10 py-2 placeholder:text-custom-skyBlue border border-custom-blue/30 focus:border-custom-skyBlue focus:ring-2 focus:ring-custom-skyBlue focus:outline-hidden"
                         />
                         {searchQuery && (
                             <button 

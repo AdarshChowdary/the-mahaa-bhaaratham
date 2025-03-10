@@ -96,7 +96,7 @@ export default function MahaabhaaratamChat() {
                       border: `1px solid ${colors.glassBorder}`,
                       backdropFilter: 'blur(10px)'
                     }}
-                    className="max-w-[80%] p-3 shadow-sm text-justify font-extralight"
+                    className="max-w-[80%] p-3 shadow-xs text-justify font-extralight"
                   >
                     {message.content}
                   </div>
@@ -111,7 +111,7 @@ export default function MahaabhaaratamChat() {
                       border: `1px solid ${colors.glassBorder}`,
                       backdropFilter: 'blur(10px)'
                     }}
-                    className="p-3 shadow-sm"
+                    className="p-3 shadow-xs"
                   >
                     <div className="flex items-center space-x-2">
                       <span>Thinking</span>
@@ -141,7 +141,7 @@ export default function MahaabhaaratamChat() {
                     color: colors.textWhite,
                     backdropFilter: 'blur(10px)'
                   }}
-                  className="flex-1 p-2 focus:outline-none focus:ring-2 focus:ring-blue-500 custom-scrollbar"
+                  className="flex-1 p-2 focus:outline-hidden focus:ring-2 focus:ring-blue-500 custom-scrollbar"
                   disabled={isLoading}
                 />
                 <button

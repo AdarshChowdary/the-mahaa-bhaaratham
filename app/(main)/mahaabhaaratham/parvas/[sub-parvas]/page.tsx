@@ -89,11 +89,11 @@ export default function SubParvas() {
 const ComingSoonMessage = () => (
     <div className="text-center py-16">
         <h2 className="text-3xl font-bold text-custom-mint mb-4">More Parvas Coming Soon</h2>
-        <p className="text-xl text-custom-skyBlue mb-6">अधिक पर्वाणि शीघ्रमेव आगमिष्यन्ति</p>
+        <p className="text-xl text-custom-sky-blue mb-6">अधिक पर्वाणि शीघ्रमेव आगमिष्यन्ति</p>
         <div className="flex items-center justify-center gap-4">
-            <div className="h-[2px] w-16 bg-gradient-to-r from-transparent via-custom-skyBlue to-transparent"></div>
+            <div className="h-[2px] w-16 bg-linear-to-r from-transparent via-custom-sky-blue to-transparent"></div>
             <MaceIcon variant={0} />
-            <div className="h-[2px] w-16 bg-gradient-to-r from-transparent via-custom-skyBlue to-transparent"></div>
+            <div className="h-[2px] w-16 bg-linear-to-r from-transparent via-custom-sky-blue to-transparent"></div>
         </div>
     </div>
 );
@@ -107,19 +107,19 @@ const SubParvaCards = ({ subParvas, totalCount }: { subParvas: SubParvasProps[],
                     href={`/mahaabhaaratham/parvas/${formatUrlString(subParva.parva_name)}/${formatUrlString(subParva.sub_parva_name)}/page/1`}
                     className="block"
                 >
-                    <div className="bg-gray-800 bg-opacity-30 h-48 p-6 transition-all duration-300 hover:bg-opacity-50 hover:transform hover:scale-105 border border-transparent hover:border-custom-skyBlue">
+                    <div className="bg-[#1f29374d] h-48 p-6 transition-all duration-300 hover:bg-opacity-50 hover:transform hover:scale-105 border border-transparent hover:border-custom-sky-blue">
                         <div className="flex flex-col justify-between h-full">
                             <div>
                                 <h3 className="text-xl font-semibold text-custom-mint mb-2 group-hover:text-white">
                                     {subParva.sub_parva_name}
                                 </h3>
-                                <p className="text-sm text-custom-skyBlue font-light">
+                                <p className="text-sm text-custom-sky-blue font-light">
                                     Sub Parva {subParva.id} of {totalCount}
                                 </p>
                             </div>
                             <div className="flex justify-between items-center mt-4">
-                                <span className="flex items-center gap-2 text-custom-skyBlue text-sm">Read More <MaceIcon variant={0}/></span>
-                                <div className="w-8 h-8 bg-custom-skyBlue bg-opacity-20 flex items-center justify-center">
+                                <span className="flex items-center gap-2 text-custom-sky-blue text-sm">Read More <MaceIcon variant={0}/></span>
+                                <div className="w-8 h-8 bg-custom-sky-blue bg-opacity-20 flex items-center justify-center">
                                     <span className="text-sm">{index + 1}</span>
                                 </div>
                             </div>

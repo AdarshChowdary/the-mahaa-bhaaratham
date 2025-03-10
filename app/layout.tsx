@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   title: "Fifth Veda",
   description: "The MahaaBhaaratham Reimagined",
   icons: {
-    icon: "/favicon.svg", // Path relative to public folder
+    icon: "/Favicon.svg",
   },
 };
 
@@ -34,7 +34,7 @@ export default function RootLayout({
         <ReactQueryProvider>
           <LLMProvider>
             <CustomCursor/>
-            <main className="flex-grow">
+            <main className="grow">
               {children}
             </main>
             <ScrollToTop/>

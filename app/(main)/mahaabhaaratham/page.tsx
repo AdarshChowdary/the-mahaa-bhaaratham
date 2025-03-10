@@ -17,8 +17,8 @@ export default function MahaaBhaaratham() {
         
         {/* Subtitle with animated divider */}
         <div className="relative mb-12 opacity-0 animate-subtitle">
-          <div className="absolute left-1/2 -translate-x-1/2 top-0 w-0 h-px bg-custom-skyBlue animate-expand" />
-          <h2 className="font-outfit text-xl md:text-2xl text-custom-skyBlue font-light mt-6 max-w-2xl mx-auto leading-relaxed">
+          <div className="absolute left-1/2 -translate-x-1/2 top-0 w-0 h-px bg-custom-sky-blue animate-expand" />
+          <h2 className="font-outfit text-xl md:text-2xl text-custom-sky-blue font-light mt-6 max-w-2xl mx-auto leading-relaxed">
             Explore the epic tale of duty, righteousness, and the complexities of life
           </h2>
         </div>
@@ -27,7 +27,7 @@ export default function MahaaBhaaratham() {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8 opacity-0 animate-buttons">
           <Link
             href="/mahaabhaaratham/characters"
-            className="group relative overflow-hidden flex items-center gap-2 bg-custom-skyBlue text-custom-navy px-8 py-4 font-outfit font-medium transition-all duration-300 hover:bg-custom-mint hover:shadow-lg hover:-translate-y-1"
+            className="group relative overflow-hidden flex items-center gap-2 bg-custom-sky-blue text-custom-navy px-8 py-4 font-outfit font-medium transition-all duration-300 hover:bg-custom-mint hover:shadow-lg hover:-translate-y-1"
             onMouseEnter={() => setHoveredButton('characters')}
             onMouseLeave={() => setHoveredButton(null)}
           >
@@ -43,7 +43,7 @@ export default function MahaaBhaaratham() {
           
           <Link
             href="/mahaabhaaratham/parvas"
-            className="group relative overflow-hidden flex items-center gap-2 border-2 border-custom-mint text-custom-skyBlue px-8 py-4 font-outfit font-medium transition-all duration-300 hover:text-custom-navy hover:shadow-lg hover:-translate-y-1"
+            className="group relative overflow-hidden flex items-center gap-2 border-2 border-custom-mint text-custom-sky-blue px-8 py-4 font-outfit font-medium transition-all duration-300 hover:text-custom-navy hover:shadow-lg hover:-translate-y-1"
             onMouseEnter={() => setHoveredButton('parvas')}
             onMouseLeave={() => setHoveredButton(null)}
           >

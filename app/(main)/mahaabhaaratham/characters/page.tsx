@@ -149,7 +149,7 @@ export default function Characters() {
       {/* Alert Notification */}
       {showAlert && (
         <div className="fixed top-4 right-4 z-50 animate-fade-in">
-          <Alert className="bg-custom-skyBlue text-custom-navy border-none shadow-lg rounded-none">
+          <Alert className="bg-custom-sky-blue text-custom-navy border-none shadow-lg rounded-none">
             <AlertDescription className="flex items-center justify-between">
               <span>No characters found starting with <span className='font-bold'>&apos;{currentLetter}&apos;</span></span>
               <button 

@@ -30,15 +30,15 @@ export default function StoryPage() {
               Today&apos;s Story
             </h1>
             <div className="flex items-center justify-center gap-4 mt-4">
-              <div className="h-[2px] w-16 bg-gradient-to-r from-transparent via-custom-skyBlue to-transparent"></div>
-              <span className="text-custom-skyBlue font-extralight text-2xl">महाभारतं की कहानी</span>
-              <div className="h-[2px] w-16 bg-gradient-to-r from-transparent via-custom-skyBlue to-transparent"></div>
+              <div className="h-[2px] w-16 bg-linear-to-r from-transparent via-custom-sky-blue to-transparent"></div>
+              <span className="text-custom-sky-blue font-extralight text-2xl">महाभारतं की कहानी</span>
+              <div className="h-[2px] w-16 bg-linear-to-r from-transparent via-custom-sky-blue to-transparent"></div>
             </div>
           </div>
         </div>
 
         {/* Story Content */}
-        <div className="flex flex-col text-custom-skyBlue text-lg font-extralight max-w-5xl m-auto text-justify px-4 gap-5 animate-fade-in">
+        <div className="flex flex-col text-custom-sky-blue text-lg font-extralight max-w-5xl m-auto text-justify px-4 gap-5 animate-fade-in">
           {paragraphs.map((paragraph, index) => (
             <p key={index}>{paragraph}</p>
           ))}

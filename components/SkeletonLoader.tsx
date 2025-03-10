@@ -3,7 +3,7 @@ const SkeletonLoader = () => (
         {[...Array(9)].map((_, index) => (
             <div 
                 key={index}
-                className="bg-gray-800 bg-opacity-30 animate-pulse h-48"
+                className="bg-[#1f29374d] bg-opacity-30 animate-pulse h-48"
             />
         ))}
     </div>

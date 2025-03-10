@@ -22,13 +22,13 @@ const PageHeader = ({
         </h1>
         {subtitle && (
           <div className="flex items-center justify-center gap-4 mt-4">
-            <div className="h-[2px] w-16 bg-gradient-to-r from-transparent via-custom-skyBlue to-transparent"></div>
-            <span className="text-custom-skyBlue font-extralight text-2xl">{subtitle}</span>
-            <div className="h-[2px] w-16 bg-gradient-to-r from-transparent via-custom-skyBlue to-transparent"></div>
+            <div className="h-[2px] w-16 bg-linear-to-r from-transparent via-custom-sky-blue to-transparent"></div>
+            <span className="text-custom-sky-blue font-extralight text-2xl">{subtitle}</span>
+            <div className="h-[2px] w-16 bg-linear-to-r from-transparent via-custom-sky-blue to-transparent"></div>
           </div>
         )}
         {description && (
-          <p className="text-custom-skyBlue mt-4 max-w-2xl mx-auto text-lg font-light">
+          <p className="text-custom-sky-blue mt-4 max-w-2xl mx-auto text-lg font-light">
             {description}
           </p>
         )}

@@ -26,7 +26,7 @@ const SectionItem = ({ sectionNumber, subParvaName, href, currentPage }: Section
   return (
     <div 
       onClick={handleClick}
-      className="bg-gray-800 bg-opacity-30 p-6 h-24 transition-all duration-300 hover:bg-opacity-50 hover:transform hover:scale-105 border border-transparent hover:border-custom-skyBlue cursor-pointer"
+      className="bg-[#1f29374d] p-6 h-24 transition-all duration-300 hover:bg-opacity-50 hover:transform hover:scale-105 border border-transparent hover:border-custom-sky-blue cursor-pointer"
     >
       <div className="h-full flex items-center justify-between">
         <div className="flex items-center space-x-6">
@@ -34,12 +34,12 @@ const SectionItem = ({ sectionNumber, subParvaName, href, currentPage }: Section
             <h3 className="text-xl font-semibold text-custom-mint">
               Section {sectionNumber}
             </h3>
-            <p className="text-custom-skyBlue font-extralight">
+            <p className="text-custom-sky-blue font-extralight">
               {subParvaName}
             </p>
           </div>
         </div>
-        <span className="flex items-center gap-2 text-custom-skyBlue">Read <MaceIcon variant={0}/></span>
+        <span className="flex items-center gap-2 text-custom-sky-blue">Read <MaceIcon variant={0}/></span>
       </div>
     </div>
   );

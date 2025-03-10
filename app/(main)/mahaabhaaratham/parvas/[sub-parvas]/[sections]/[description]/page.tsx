@@ -192,7 +192,7 @@ export default function Description() {
         return (
             <div className="max-w-3xl mx-auto px-4">
                 
-                <div className="bg-gray-800/30 p-8 rounded-lg shadow-lg backdrop-blur-sm border border-gray-700/50 relative overflow-hidden">
+                <div className="bg-[#1f29374d] p-8 rounded-lg shadow-lg backdrop-blur-xs border border-gray-700/50 relative overflow-hidden">
                     {/* Decorative corner elements */}
                     <div className="absolute top-0 left-0 w-16 h-16 border-t-2 border-l-2 border-custom-mint/30 rounded-tl-lg"></div>
                     <div className="absolute top-0 right-0 w-16 h-16 border-t-2 border-r-2 border-custom-mint/30 rounded-tr-lg"></div>

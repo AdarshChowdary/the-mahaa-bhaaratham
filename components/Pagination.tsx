@@ -65,7 +65,7 @@ export default function Pagination({
       <button
         onClick={handlePreviousPage}
         disabled={currentPage === 1}
-        className={`bg-gray-800/80 text-custom-mint rounded-full border border-custom-mint/30 hover:bg-gray-700 focus:outline-none transition-all duration-300 backdrop-blur-sm shadow-lg p-2 ${
+        className={`bg-gray-800/80 text-custom-mint rounded-full border border-custom-mint/30 hover:bg-gray-700 focus:outline-hidden transition-all duration-300 backdrop-blur-xs shadow-lg p-2 ${
           currentPage === 1
             ? 'border-gray-600 text-gray-500 hover:bg-gray-800/80'
             : ''
@@ -135,7 +135,7 @@ export default function Pagination({
       <button
         onClick={handleNextPage}
         disabled={currentPage >= totalPages}
-        className={`bg-gray-800/80 text-custom-mint rounded-full border border-custom-mint/30 hover:bg-gray-700 focus:outline-none transition-all duration-300 backdrop-blur-sm shadow-lg p-2 ${
+        className={`bg-gray-800/80 text-custom-mint rounded-full border border-custom-mint/30 hover:bg-gray-700 focus:outline-hidden transition-all duration-300 backdrop-blur-xs shadow-lg p-2 ${
           currentPage >= totalPages
             ? 'border-gray-600 text-gray-500 hover:bg-gray-800/80'
             : ''

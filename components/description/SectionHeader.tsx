@@ -28,7 +28,7 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
                 {/* Search Button - always visible */}
                 <button 
                     onClick={onToggleSearch}
-                    className="p-2 bg-custom-navy/80 text-custom-mint rounded-full border border-custom-mint/30 hover:bg-custom-navy active:bg-custom-blue focus:outline-none transition-all duration-300 backdrop-blur-sm shadow-lg"
+                    className="p-2 bg-custom-navy/80 text-custom-mint rounded-full border border-custom-mint/30 hover:bg-custom-navy active:bg-custom-blue focus:outline-hidden transition-all duration-300 backdrop-blur-xs shadow-lg"
                     title={isSearchOpen ? "Hide search" : "Search in section"}
                 >
                     <Search className="w-5 h-5" />

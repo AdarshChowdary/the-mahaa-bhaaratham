@@ -11,7 +11,7 @@ const RandomCharacterButton = ({ onClick, isShuffling }: RandomCharacterButtonPr
     <button
       onClick={onClick}
       disabled={isShuffling}
-      className={`mb-8 px-6 py-3 bg-custom-skyBlue text-custom-navy
+      className={`mb-8 px-6 py-3 bg-custom-sky-blue text-custom-navy
           flex items-center gap-2 mx-auto hover:bg-custom-mint transition-all
           ${isShuffling ? 'opacity-75 cursor-not-allowed' : 'hover:scale-105'}`}
     >

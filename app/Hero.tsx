@@ -107,8 +107,8 @@ export default function MahaaBhaaratham() {
         </h1>
         
         <div className="relative mb-12 opacity-0 animate-subtitle">
-          <div className="absolute left-1/2 -translate-x-1/2 top-0 w-0 h-px bg-custom-skyBlue animate-expand" />
-          <h2 className="font-outfit text-xl md:text-2xl text-custom-skyBlue font-light mt-6 max-w-2xl mx-auto leading-relaxed">
+          <div className="absolute left-1/2 -translate-x-1/2 top-0 w-0 h-px bg-custom-sky-blue animate-expand" />
+          <h2 className="font-outfit text-xl md:text-2xl text-custom-sky-blue font-light mt-6 max-w-2xl mx-auto leading-relaxed">
             THE GREAT INDIAN TALE
           </h2>
         </div>
@@ -116,21 +116,21 @@ export default function MahaaBhaaratham() {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mt-8 opacity-0 animate-buttons">
           <Link
             href="/mahaabhaaratham"
-            className="group relative overflow-hidden flex items-center gap-2 bg-gradient-to-r from-custom-blue to-custom-mint text-white px-8 py-4 font-medium transform transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-custom-blue/30"
+            className="group relative overflow-hidden flex items-center gap-2 bg-linear-to-r from-custom-blue to-custom-mint text-white px-8 py-4 font-medium transform transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-custom-blue/30"
           >
             <span className="relative z-10 flex items-center gap-2">
               Begin the Journey 
               <MaceIcon variant={0}/>
             </span>
-            <div className="absolute inset-0 bg-gradient-to-r from-custom-mint to-custom-blue opacity-0 group-hover:opacity-100 transition-opacity" />
+            <div className="absolute inset-0 bg-linear-to-r from-custom-mint to-custom-blue opacity-0 group-hover:opacity-100 transition-opacity" />
           </Link>
           
           <Link
             href="/todaystory"
-            className="group flex items-center gap-3 text-custom-mint hover:text-custom-skyBlue transition-all duration-300"
+            className="group flex items-center gap-3 text-custom-mint hover:text-custom-sky-blue transition-all duration-300"
           >
             <ScrollText className="w-6 h-6 group-hover:rotate-6 transition-transform" />
-            <span className="relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-custom-skyBlue after:transition-all after:duration-300 group-hover:after:w-full">
+            <span className="relative after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-custom-sky-blue after:transition-all after:duration-300 group-hover:after:w-full">
               Today&apos;s Wisdom
             </span>
           </Link>

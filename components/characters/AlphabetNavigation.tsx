@@ -47,8 +47,8 @@ export default function AlphabetNavigation({
           onClick={() => onLetterClick(letter)}
           className={`w-8 h-8 rounded-full flex items-center justify-center 
             ${selectedLetter === letter 
-                ? 'bg-custom-skyBlue text-custom-navy' 
-                : 'border border-custom-skyBlue hover:bg-custom-skyBlue hover:text-custom-navy'
+                ? 'bg-custom-sky-blue text-custom-navy'
+                : 'border border-custom-sky-blue hover:bg-custom-sky-blue hover:text-custom-navy'
             } 
             ${!groupedCharacters[letter]?.characters.length ? 'opacity-50' : 'opacity-100'}
             transition-colors duration-300`}

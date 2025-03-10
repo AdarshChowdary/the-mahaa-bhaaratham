@@ -58,7 +58,7 @@ const CharacterContent = ({
     if (searchError) {
       return (
         <div className="text-center py-8">
-          <p className="text-xl text-custom-skyBlue">{searchError}</p>
+          <p className="text-xl text-custom-sky-blue">{searchError}</p>
         </div>
       );
     }
@@ -67,7 +67,7 @@ const CharacterContent = ({
     if (searchResults.length === 0) {
       return (
         <div className="text-center py-8">
-          <p className="text-xl text-custom-skyBlue">No characters found matching &quot;{searchQuery}&quot;</p>
+          <p className="text-xl text-custom-sky-blue">No characters found matching &quot;{searchQuery}&quot;</p>
         </div>
       );
     }

@@ -46,7 +46,7 @@ export default function LetterCharacters() {
             label='Back to Characters'
           />
           <div className="text-center py-8">
-            <p className="text-xl text-custom-skyBlue">Letter parameter is missing</p>
+            <p className="text-xl text-custom-sky-blue">Letter parameter is missing</p>
           </div>
         </div>
       </div>
@@ -84,11 +84,11 @@ export default function LetterCharacters() {
         </div>
       ) : error ? (
         <div className="text-center py-8">
-          <p className="text-xl text-custom-skyBlue">{error}</p>
+          <p className="text-xl text-custom-sky-blue">{error}</p>
         </div>
       ) : filteredCharacters.length === 0 ? (
         <div className="text-center py-8">
-          <p className="text-xl text-custom-skyBlue">
+          <p className="text-xl text-custom-sky-blue">
             {searchQuery 
               ? `No characters found matching "${searchQuery}" within "${letter}"`
               : `No characters found starting with "${letter}"`}
@@ -101,7 +101,7 @@ export default function LetterCharacters() {
               <button
                 key={character.id}
                 onClick={() => handleCharacterClick(character)}
-                className="p-4 text-left bg-custom-navy hover:bg-custom-skyBlue hover:text-custom-navy transition-colors duration-300"
+                className="p-4 text-left bg-custom-navy hover:bg-custom-sky-blue hover:text-custom-navy transition-colors duration-300"
               >
                 {character.name}
               </button>
@@ -112,7 +112,7 @@ export default function LetterCharacters() {
       
       {/* Letter info */}
       {!isLoading && !error && filteredCharacters.length > 0 && (
-        <div className="mt-8 text-center text-custom-skyBlue text-sm">
+        <div className="mt-8 text-center text-custom-sky-blue text-sm">
           Showing {filteredCharacters.length} {filteredCharacters.length === 1 ? 'character' : 'characters'} 
           {searchQuery && ` matching "${searchQuery}"`} 
           {searchQuery ? ' from' : ' starting with'} &apos;{letter}&apos;
