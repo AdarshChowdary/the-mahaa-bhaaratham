@@ -12,11 +12,11 @@ const SectionNavigation: React.FC<SectionNavigationProps> = ({
     onNavigate
 }) => {
     return (
-        <div className="flex justify-between mt-8 mb-2">
+        <div className="flex flex-col-reverse sm:flex-row justify-between mt-8 mb-2 gap-2 sm:gap-0">
             <button
                 onClick={() => onNavigate('prev')}
                 disabled={sectionNumber <= 1}
-                className={`flex items-center gap-2 px-4 py-2 rounded-md transition-all duration-300 ${
+                className={`flex items-center justify-center gap-2 px-4 py-2 rounded-md transition-all duration-300 ${
                     sectionNumber <= 1 
                         ? 'bg-gray-800/50 text-gray-500 cursor-not-allowed' 
                         : 'bg-custom-navy/80 text-custom-mint hover:bg-custom-navy active:bg-custom-blue border border-custom-mint/30'
@@ -28,7 +28,7 @@ const SectionNavigation: React.FC<SectionNavigationProps> = ({
 
             <button
                 onClick={() => onNavigate('next')}
-                className="flex items-center gap-2 px-4 py-2 bg-custom-navy/80 text-custom-mint rounded-md border border-custom-mint/30 hover:bg-custom-navy active:bg-custom-blue transition-all duration-300"
+                className="flex items-center justify-center gap-2 px-4 py-2 bg-custom-navy/80 text-custom-mint rounded-md border border-custom-mint/30 hover:bg-custom-navy active:bg-custom-blue transition-all duration-300"
             >
                 <span>Next Section</span>
                 <ChevronRight className="w-5 h-5" />

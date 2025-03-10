@@ -3,7 +3,7 @@ export default function Footer () {
         <footer className="w-full bg-custom-navy py-6 px-4">
             <div className="max-w-4xl mx-auto flex flex-col items-center gap-4">
                 <p className="text-custom-mint text-lg">
-                    © 2024 The Fifth Veda. All rights reserved.
+                    &copy; 2024 The Fifth Veda. All rights reserved.
                 </p>
                 <div className="flex gap-5 items-center">
                     <a

@@ -16,6 +16,9 @@ const outfit = Outfit({
 export const metadata: Metadata = {
   title: "Fifth Veda",
   description: "The MahaaBhaaratham Reimagined",
+  icons: {
+    icon: "/favicon.svg", // Path relative to public folder
+  },
 };
 
 export default function RootLayout({
