@@ -4,6 +4,7 @@ import { getParvas } from '@/app/actions/parvas';
 import { getSubParvas } from '@/app/actions/sub-parvas';
 import { getSections } from '@/app/actions/sections';
 import { getSections as getSectionDescription } from '@/app/actions/section-description';
+import { getAdjacentSections, SectionDetails } from '@/app/actions/getAdjacentSections';
 
 // Define your return types for better type checking
 interface Section {
@@ -17,6 +18,12 @@ interface SectionsResponse {
   page: number;
   pageSize: number;
   totalPages: number;
+}
+
+interface AdjacentSectionsResponse {
+  current: SectionDetails | null;
+  previous: SectionDetails | null;
+  next: SectionDetails | null;
 }
 
 // Hook for fetching Parvas
@@ -65,6 +72,15 @@ export function useSectionByNumber(sectionNumber: number) {
       const data = await getSectionDescription();
       return data.find(section => section.section_number === sectionNumber) || null;
     },
+    enabled: !!sectionNumber,
+  });
+}
+
+// Hook for fetching adjacent sections (previous, current, next)
+export function useAdjacentSections(sectionNumber: number) {
+  return useQuery<AdjacentSectionsResponse, Error>({
+    queryKey: ['adjacentSections', sectionNumber],
+    queryFn: () => getAdjacentSections(sectionNumber),
     enabled: !!sectionNumber,
   });
 }

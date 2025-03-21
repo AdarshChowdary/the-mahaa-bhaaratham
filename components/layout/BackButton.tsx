@@ -11,8 +11,9 @@ const BackButton = ({ href, label }: BackButtonProps) => {
     <Link 
       href={href}
       className="hover-underline-animation mb-8 inline-block text-lg font-extralight"
+      aria-label={`Navigate ${label}`}
     >
-      ← {label}
+      <span aria-hidden="true">←</span> {label}
     </Link>
   );
 };

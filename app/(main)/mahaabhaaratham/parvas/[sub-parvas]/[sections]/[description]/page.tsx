@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
-import { useSectionByNumber } from '@/app/hooks/useQueries';
+import { useSectionByNumber, useAdjacentSections } from '@/hooks/useQueries';
 import { splitIntoParagraphs } from '@/utils/text-utils';
 import BackButton from '@/components/layout/BackButton';
 import PageHeader from '@/components/layout/PageHeader';
@@ -14,6 +14,7 @@ import SearchBar from '@/components/description/SearchBar';
 import SectionHeader from '@/components/description/SectionHeader';
 import SectionNavigation from '@/components/description/SectionNavigation';
 import ContentDisplay from '@/components/description/ContentDisplay';
+import FloatingSearchNavigation from '@/components/description/FloatingSearchNavigation';
 
 interface SearchResult {
     pageIndex: number;
@@ -44,9 +45,21 @@ export default function Description() {
     // Use the hook to fetch data with caching
     const { 
         data: descriptionData, 
-        isLoading, 
-        error 
+        isLoading: isDescriptionLoading, 
+        error: descriptionError 
     } = useSectionByNumber(sectionNumber);
+    
+    // Fetch adjacent sections information
+    const {
+        data: adjacentSectionsData,
+        isLoading: isAdjacentLoading,
+        error: adjacentError
+    } = useAdjacentSections(sectionNumber);
+    
+    // Combined loading state
+    const isLoading = isDescriptionLoading || isAdjacentLoading;
+    // Combined error state
+    const error = descriptionError || adjacentError;
     
     // Split description into pages
     const paragraphs = descriptionData ? splitIntoParagraphs(descriptionData.description) : [];
@@ -60,7 +73,7 @@ export default function Description() {
 
     // Handle errors
     if (error) {
-        console.error('Error fetching section description:', error);
+        console.error('Error fetching section data:', error);
     }
 
     // Retrieve fromPage from sessionStorage on component mount
@@ -89,17 +102,21 @@ export default function Description() {
 
     // Navigate to previous or next section
     const navigateToSection = (direction: 'prev' | 'next') => {
-        if (!descriptionData) return;
+        if (!adjacentSectionsData) return;
         
-        const targetSectionNumber = direction === 'prev' 
-            ? sectionNumber - 1 
-            : sectionNumber + 1;
+        // Get the target section based on direction
+        const targetSection = direction === 'prev'
+            ? adjacentSectionsData.previous
+            : adjacentSectionsData.next;
             
+        // If there's no target section, don't navigate
+        if (!targetSection) return;
+        
         // Save current page to session storage before navigating
         sessionStorage.setItem('fromPage', fromPage);
         
-        // Navigate to the new section, reset to page 1
-        router.push(`/mahaabhaaratham/parvas/${formatUrlString(params['sub-parvas'] as string)}/${formatUrlString(params.sections as string)}/${targetSectionNumber}?page=1`);
+        // Navigate to the new section with its appropriate parva and sub-parva
+        router.push(`/mahaabhaaratham/parvas/${formatUrlString(targetSection.parva_name)}/${formatUrlString(targetSection.sub_parva_name)}/${targetSection.section_number}?page=1`);
     };
 
     const performSearch = (query: string) => {
@@ -182,22 +199,28 @@ export default function Description() {
     };
 
     // Build the back URL with the correct page number from the sections page
+    // Using the current sub-parva from the actual section data, not from the URL params
     const backUrl = descriptionData ? 
-        `/mahaabhaaratham/parvas/${formatUrlString(params['sub-parvas'] as string)}/${formatUrlString(params.sections as string)}/page/${fromPage}` :
+        `/mahaabhaaratham/parvas/${formatUrlString(descriptionData.parva_name)}/${formatUrlString(descriptionData.sub_parva_name)}/page/${fromPage}` :
         `/mahaabhaaratham/parvas/${formatUrlString(params['sub-parvas'] as string)}/${formatUrlString(params.sections as string)}/page/1`;
 
     const renderDescription = () => {
-        if (!descriptionData) return null;
+        if (!descriptionData || !adjacentSectionsData) return null;
+
+        // Determine if there are previous/next sections available
+        const hasPrevious = !!adjacentSectionsData.previous;
+        const hasNext = !!adjacentSectionsData.next;
 
         return (
-            <div className="max-w-3xl mx-auto px-4">
+            <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="visually-hidden" id="page-announcement" aria-live="polite"></div>
                 
-                <div className="bg-[#1f29374d] p-8 rounded-lg shadow-lg backdrop-blur-xs border border-gray-700/50 relative overflow-hidden">
+                <div className="bg-[#1f29374d] p-4 sm:p-6 md:p-8 rounded-lg shadow-lg backdrop-blur-xs border border-gray-700/50 relative overflow-hidden">
                     {/* Decorative corner elements */}
-                    <div className="absolute top-0 left-0 w-16 h-16 border-t-2 border-l-2 border-custom-mint/30 rounded-tl-lg"></div>
-                    <div className="absolute top-0 right-0 w-16 h-16 border-t-2 border-r-2 border-custom-mint/30 rounded-tr-lg"></div>
-                    <div className="absolute bottom-0 left-0 w-16 h-16 border-b-2 border-l-2 border-custom-mint/30 rounded-bl-lg"></div>
-                    <div className="absolute bottom-0 right-0 w-16 h-16 border-b-2 border-r-2 border-custom-mint/30 rounded-br-lg"></div>
+                    <div className="absolute top-0 left-0 w-8 h-8 sm:w-12 sm:h-12 md:w-16 md:h-16 border-t-2 border-l-2 border-custom-mint/30 rounded-tl-lg" aria-hidden="true"></div>
+                    <div className="absolute top-0 right-0 w-8 h-8 sm:w-12 sm:h-12 md:w-16 md:h-16 border-t-2 border-r-2 border-custom-mint/30 rounded-tr-lg" aria-hidden="true"></div>
+                    <div className="absolute bottom-0 left-0 w-8 h-8 sm:w-12 sm:h-12 md:w-16 md:h-16 border-b-2 border-l-2 border-custom-mint/30 rounded-bl-lg" aria-hidden="true"></div>
+                    <div className="absolute bottom-0 right-0 w-8 h-8 sm:w-12 sm:h-12 md:w-16 md:h-16 border-b-2 border-r-2 border-custom-mint/30 rounded-br-lg" aria-hidden="true"></div>
 
                     <div className="relative z-10">
                         <SectionHeader 
@@ -209,39 +232,58 @@ export default function Description() {
                         
                         {/* Search bar and related components */}
                         {isSearchOpen && (
-                            <SearchBar 
-                                searchQuery={searchQuery}
-                                searchResults={searchResults}
-                                currentSearchIndex={currentSearchIndex}
-                                onQueryChange={handleSearchQueryChange}
-                                onClearSearch={clearSearch}
-                                onNavigateResult={navigateToSearchResult}
-                            />
+                            <div id="search-panel">
+                                <SearchBar 
+                                    searchQuery={searchQuery}
+                                    searchResults={searchResults}
+                                    currentSearchIndex={currentSearchIndex}
+                                    onQueryChange={handleSearchQueryChange}
+                                    onClearSearch={clearSearch}
+                                    onNavigateResult={navigateToSearchResult}
+                                />
+                            </div>
                         )}
 
                         {/* Content display with search highlighting */}
-                        <ContentDisplay 
-                            paragraphs={currentPageParagraphs}
-                            startIndex={startIndex}
-                            searchQuery={searchQuery}
-                            searchResults={searchResults}
-                            currentSearchIndex={currentSearchIndex}
-                        />
+                        <section aria-label="Section content">
+                            <ContentDisplay 
+                                paragraphs={currentPageParagraphs}
+                                startIndex={startIndex}
+                                searchQuery={searchQuery}
+                                searchResults={searchResults}
+                                currentSearchIndex={currentSearchIndex}
+                            />
+                        </section>
 
                         {/* Pagination */}
-                        <Pagination
-                            currentPage={currentPage + 1} // Convert from 0-based to 1-based for display
-                            totalPages={totalPages}
-                            onPageChange={(page) => navigateToPage(page - 1)} // Convert from 1-based to 0-based for internal handling
-                            queryParam="page"
-                        />
+                        <nav aria-label="Page navigation">
+                            <Pagination
+                                currentPage={currentPage + 1} // Convert from 0-based to 1-based for display
+                                totalPages={totalPages}
+                                onPageChange={(page) => navigateToPage(page - 1)} // Convert from 1-based to 0-based for internal handling
+                                queryParam="page"
+                            />
+                        </nav>
                     </div>
                 </div>
                 
-                {/* Section Navigation buttons (bottom) */}
-                <SectionNavigation 
-                    sectionNumber={sectionNumber} 
-                    onNavigate={navigateToSection} 
+                {/* Section Navigation buttons (bottom) with disabled state based on availability */}
+                <nav aria-label="Section navigation" className="mt-6">
+                    <SectionNavigation 
+                        sectionNumber={sectionNumber} 
+                        onNavigate={navigateToSection}
+                        hasPrevious={hasPrevious}
+                        hasNext={hasNext}
+                        previousInfo={adjacentSectionsData.previous}
+                        nextInfo={adjacentSectionsData.next}
+                    />
+                </nav>
+
+                <FloatingSearchNavigation 
+                    searchQuery={searchQuery}
+                    searchResults={searchResults}
+                    currentSearchIndex={currentSearchIndex}
+                    onNavigateResult={navigateToSearchResult}
                 />
             </div>
         );
@@ -259,7 +301,17 @@ export default function Description() {
                 subtitle='विवरणम्'
             />
 
-            {isLoading ? <SkeletonLoader/> : renderDescription()}
+            {isLoading ? (
+                <div aria-live="polite" aria-busy="true">
+                    <SkeletonLoader/>
+                </div>
+            ) : error ? (
+                <div className="text-center py-8 text-red-400" aria-live="assertive">
+                    <p>Error loading section data. Please try again later.</p>
+                </div>
+            ) : (
+                renderDescription()
+            )}
         </PageLayout>
     );
 }

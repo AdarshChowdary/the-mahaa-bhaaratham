@@ -7,7 +7,7 @@ export async function getSections() {
     const client = await pool.connect()
     
     const result = await client.query(`
-      SELECT section_number, description, sub_parva_name FROM sections ORDER BY id
+      SELECT section_number, description, sub_parva_name, parva_name FROM sections ORDER BY id
     `)
     
     client.release()

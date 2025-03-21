@@ -66,6 +66,8 @@ const ContentDisplay: React.FC<ContentDisplayProps> = ({
                             ? 'bg-custom-mint text-custom-navy font-medium px-1 rounded' // Style for current match
                             : 'bg-custom-mint/20 text-custom-mint px-1 rounded' // Style for other matches
                     }
+                    role="mark"
+                    aria-current={isCurrentMatch ? "true" : "false"}
                 >
                     {text.substring(startPos, endPos)}
                 </span>
@@ -83,16 +85,22 @@ const ContentDisplay: React.FC<ContentDisplayProps> = ({
     };
 
     return (
-        <div className="prose prose-invert max-w-none">
+        <div className="prose prose-invert max-w-none" aria-live="polite">
             {paragraphs.map((paragraph, index) => (
                 <p
                     key={`paragraph-${startIndex + index}`}
                     data-paragraph-index={startIndex + index}
-                    className="text-gray-300 text-justify leading-relaxed mb-4"
+                    className="text-gray-300 text-justify leading-relaxed mb-4 text-base sm:text-lg"
+                    tabIndex={searchResults.some(result => result.paragraphIndex === startIndex + index) ? 0 : undefined}
                 >
                     {highlightSearchResults(paragraph, index)}
                 </p>
             ))}
+            {paragraphs.length === 0 && (
+                <div className="text-gray-400 text-center py-8" aria-live="assertive">
+                    No content available for this page.
+                </div>
+            )}
         </div>
     );
 };

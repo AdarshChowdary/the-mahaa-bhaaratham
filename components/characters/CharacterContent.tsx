@@ -1,7 +1,7 @@
 // components/characters/CharacterContent.tsx
 
 import { Character, GroupedCharacters } from '@/types/characters';
-import CharacterList from './/CharacterList';
+import CharacterList from './CharacterList';
 import AlphabetNavigation from './AlphabetNavigation';
 import RandomCharacterButton from './RandomCharacterButton';
 
@@ -47,8 +47,14 @@ const CharacterContent = ({
     // Show loading state while searching
     if (isSearching) {
       return (
-        <div className="flex flex-col justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-custom-mint mb-4"></div>
+        <div 
+          className="flex flex-col justify-center items-center h-64"
+          aria-live="polite"
+        >
+          <div 
+            className="animate-spin rounded-full h-12 w-12 border-b-2 border-custom-mint mb-4"
+            aria-hidden="true"
+          ></div>
           <p className="text-custom-mint">Searching for characters...</p>
         </div>
       );
@@ -57,7 +63,11 @@ const CharacterContent = ({
     // Show error state
     if (searchError) {
       return (
-        <div className="text-center py-8">
+        <div 
+          className="text-center py-8"
+          aria-live="assertive"
+          role="alert"
+        >
           <p className="text-xl text-custom-sky-blue">{searchError}</p>
         </div>
       );
@@ -66,7 +76,10 @@ const CharacterContent = ({
     // Show no results
     if (searchResults.length === 0) {
       return (
-        <div className="text-center py-8">
+        <div 
+          className="text-center py-8"
+          aria-live="polite"
+        >
           <p className="text-xl text-custom-sky-blue">No characters found matching &quot;{searchQuery}&quot;</p>
         </div>
       );
@@ -74,18 +87,20 @@ const CharacterContent = ({
     
     // Show search results
     return (
-      <CharacterList
-        groupedCharacters={displayedCharacters}
-        onCharacterClick={onCharacterClick}
-        onViewAll={onViewAll}
-        isLoading={false}
-      />
+      <section aria-label={`Character search results for "${searchQuery}"`}>
+        <CharacterList
+          groupedCharacters={displayedCharacters}
+          onCharacterClick={onCharacterClick}
+          onViewAll={onViewAll}
+          isLoading={false}
+        />
+      </section>
     );
   }
   
   // When not searching
   return (
-    <>
+    <div aria-live="polite">
       <RandomCharacterButton 
         onClick={onRandomCharacter} 
         isShuffling={isShuffling} 
@@ -100,13 +115,15 @@ const CharacterContent = ({
         setCurrentLetter={setCurrentLetter}
       />
 
-      <CharacterList
-        groupedCharacters={charactersData}
-        onCharacterClick={onCharacterClick}
-        onViewAll={onViewAll}
-        isLoading={isLoading}
-      />
-    </>
+      <section aria-label="Characters by letter">
+        <CharacterList
+          groupedCharacters={charactersData}
+          onCharacterClick={onCharacterClick}
+          onViewAll={onViewAll}
+          isLoading={isLoading}
+        />
+      </section>
+    </div>
   );
 };
 

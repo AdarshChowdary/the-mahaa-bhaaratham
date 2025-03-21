@@ -40,22 +40,36 @@ export default function AlphabetNavigation({
   };
 
   return (
-    <div className="flex flex-wrap justify-center gap-2 mb-8">
-      {fullAlphabet.map(letter => (
-        <button
-          key={letter}
-          onClick={() => onLetterClick(letter)}
-          className={`w-8 h-8 rounded-full flex items-center justify-center 
-            ${selectedLetter === letter 
-                ? 'bg-custom-sky-blue text-custom-navy'
-                : 'border border-custom-sky-blue hover:bg-custom-sky-blue hover:text-custom-navy'
-            } 
-            ${!groupedCharacters[letter]?.characters.length ? 'opacity-50' : 'opacity-100'}
-            transition-colors duration-300`}
-        >
-          {letter}
-        </button>
-      ))}
-    </div>
+    <nav 
+      className="w-full overflow-x-auto py-2 mb-6 sm:mb-8"
+      aria-label="Character alphabet navigation"
+    >
+      <div className="flex flex-wrap justify-center gap-1 sm:gap-2 mx-auto">
+        {fullAlphabet.map(letter => {
+          const hasCharacters = !!groupedCharacters[letter]?.characters.length;
+          
+          return (
+            <button
+              key={letter}
+              onClick={() => onLetterClick(letter)}
+              className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-sm sm:text-base
+                ${selectedLetter === letter 
+                    ? 'bg-custom-sky-blue text-custom-navy'
+                    : 'border border-custom-sky-blue hover:bg-custom-sky-blue hover:text-custom-navy'
+                } 
+                ${!hasCharacters ? 'opacity-50 cursor-default' : 'opacity-100'}
+                transition-colors duration-300`}
+              aria-label={`View characters starting with ${letter}`}
+              aria-pressed={selectedLetter === letter}
+              aria-disabled={!hasCharacters}
+              data-has-characters={hasCharacters}
+              data-character-letter={letter}
+            >
+              {letter}
+            </button>
+          );
+        })}
+      </div>
+    </nav>
   );
 }

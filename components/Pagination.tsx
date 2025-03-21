@@ -60,18 +60,26 @@ export default function Pagination({
   };
 
   return (
-    <div className="flex items-center justify-center mt-8 space-x-2">
+    <nav 
+      className="flex items-center justify-center mt-6 sm:mt-8 space-x-1 sm:space-x-2"
+      aria-label="Pagination"
+      role="navigation"
+      data-current-page={currentPage}
+      data-total-pages={totalPages}
+    >
       {/* Previous Page Button */}
       <button
         onClick={handlePreviousPage}
         disabled={currentPage === 1}
-        className={`bg-gray-800/80 text-custom-mint rounded-full border border-custom-mint/30 hover:bg-gray-700 focus:outline-hidden transition-all duration-300 backdrop-blur-xs shadow-lg p-2 ${
+        className={`bg-gray-800/80 text-custom-mint rounded-full border border-custom-mint/30 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-custom-mint/50 transition-all duration-300 backdrop-blur-xs shadow-lg p-1.5 sm:p-2 ${
           currentPage === 1
-            ? 'border-gray-600 text-gray-500 hover:bg-gray-800/80'
+            ? 'border-gray-600 text-gray-500 hover:bg-gray-800/80 cursor-not-allowed'
             : ''
         }`}
+        aria-label="Previous page"
+        aria-disabled={currentPage === 1}
       >
-        <ChevronLeft className='w-4 h-4' />
+        <ChevronLeft className='w-3 h-3 sm:w-4 sm:h-4' aria-hidden="true" />
       </button>
       
       {/* First Page */}
@@ -79,16 +87,18 @@ export default function Pagination({
         <>
           <Link
             href={createPageUrl(1)}
-            className="p-2 w-8 h-8 aspect-square rounded-full border border-custom-mint/30 text-custom-mint hover:bg-custom-mint/10 flex items-center justify-center shadow-lg"
+            className="p-1 sm:p-2 w-6 h-6 sm:w-8 sm:h-8 aspect-square rounded-full border border-custom-mint/30 text-custom-mint hover:bg-custom-mint/10 flex items-center justify-center shadow-lg text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-custom-mint/50"
             onClick={(e) => {
               e.preventDefault();
               onPageChange(1);
             }}
+            aria-label="Go to page 1"
+            aria-current={currentPage === 1 ? "page" : undefined}
           >
             1
           </Link>
           {startPage > 2 && (
-            <span className="text-gray-500">...</span>
+            <span className="text-gray-500 px-1" aria-hidden="true">...</span>
           )}
         </>
       )}
@@ -98,7 +108,7 @@ export default function Pagination({
         <Link
           key={page}
           href={createPageUrl(page)}
-          className={`p-2 w-8 h-8 aspect-square rounded-full shadow-lg flex items-center justify-center ${
+          className={`p-1 sm:p-2 w-6 h-6 sm:w-8 sm:h-8 aspect-square rounded-full shadow-lg flex items-center justify-center text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-custom-mint/50 ${
             page === currentPage
               ? 'bg-custom-mint text-custom-navy font-medium'
               : 'border border-custom-mint/30 text-custom-mint hover:bg-custom-mint/10'
@@ -107,6 +117,8 @@ export default function Pagination({
             e.preventDefault();
             onPageChange(page);
           }}
+          aria-label={`Go to page ${page}`}
+          aria-current={page === currentPage ? "page" : undefined}
         >
           {page}
         </Link>
@@ -116,15 +128,17 @@ export default function Pagination({
       {endPage < totalPages && (
         <>
           {endPage < totalPages - 1 && (
-            <span className="text-gray-500">...</span>
+            <span className="text-gray-500 px-1" aria-hidden="true">...</span>
           )}
           <Link
             href={createPageUrl(totalPages)}
-            className="p-2 w-8 h-8 aspect-square rounded-full border border-custom-mint/30 text-custom-mint hover:bg-custom-mint/10 flex items-center justify-center shadow-lg"
+            className="p-1 sm:p-2 w-6 h-6 sm:w-8 sm:h-8 aspect-square rounded-full border border-custom-mint/30 text-custom-mint hover:bg-custom-mint/10 flex items-center justify-center shadow-lg text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-custom-mint/50"
             onClick={(e) => {
               e.preventDefault();
               onPageChange(totalPages);
             }}
+            aria-label={`Go to page ${totalPages}`}
+            aria-current={currentPage === totalPages ? "page" : undefined}
           >
             {totalPages}
           </Link>
@@ -135,14 +149,16 @@ export default function Pagination({
       <button
         onClick={handleNextPage}
         disabled={currentPage >= totalPages}
-        className={`bg-gray-800/80 text-custom-mint rounded-full border border-custom-mint/30 hover:bg-gray-700 focus:outline-hidden transition-all duration-300 backdrop-blur-xs shadow-lg p-2 ${
+        className={`bg-gray-800/80 text-custom-mint rounded-full border border-custom-mint/30 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-custom-mint/50 transition-all duration-300 backdrop-blur-xs shadow-lg p-1.5 sm:p-2 ${
           currentPage >= totalPages
-            ? 'border-gray-600 text-gray-500 hover:bg-gray-800/80'
+            ? 'border-gray-600 text-gray-500 hover:bg-gray-800/80 cursor-not-allowed'
             : ''
         }`}
+        aria-label="Next page"
+        aria-disabled={currentPage >= totalPages}
       >
-        <ChevronRight className='w-4 h-4' />
+        <ChevronRight className='w-3 h-3 sm:w-4 sm:h-4' aria-hidden="true" />
       </button>
-    </div>
+    </nav>
   );
 }

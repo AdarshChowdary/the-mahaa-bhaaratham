@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import SectionItem from "@/components/sections/SectionItem";
-import { useSections } from '@/app/hooks/useQueries';
+import { useSections } from '@/hooks/useQueries';
 import SearchComponent from "@/components/SearchComponent";
 import NoResults from "@/components/NoResults";
 import { formatUrlString, formatParvaName } from '@/utils/string-utils';
@@ -79,48 +79,58 @@ export default function Sections() {
 
     return (
         <PageLayout>
-            <BackButton
-                href={`/mahaabhaaratham/parvas/${formatUrlString(currentParva)}`}
-                label="Back to Sub Parvas"
-            />
+            <div className="w-full px-4 md:px-6 lg:px-8">
+                <BackButton
+                    href={`/mahaabhaaratham/parvas/${formatUrlString(currentParva)}`}
+                    label="Back to Sub Parvas"
+                    aria-label={`Return to ${formatParvaName(currentParva)} sub parvas listing`}
+                />
 
-            <SectionsHeader 
-                subParvaName={formatParvaName(currentSubParva)}
-                totalSections={total}
-                sectionRange={getSectionRange(sections)}
-            />
+                <SectionsHeader 
+                    subParvaName={formatParvaName(currentSubParva)}
+                    totalSections={total}
+                    sectionRange={getSectionRange(sections)}
+                />
 
-            <SearchComponent
-                searchQuery={searchQuery}
-                setSearchQuery={setSearchQuery}
-                placeholder="Search by section number..."
-                showResultCount={true}
-                resultCount={filteredSections.length}
-                resultLabel="Section"
-            />
+                <SearchComponent
+                    searchQuery={searchQuery}
+                    setSearchQuery={setSearchQuery}
+                    placeholder="Search by section number..."
+                    showResultCount={true}
+                    resultCount={filteredSections.length}
+                    resultLabel="Section"
+                    aria-label="Search sections by number"
+                    aria-controls="sections-list"
+                />
 
-            {isLoading || isFetching ? (
-                <SkeletonLoader count={10} />
-            ) : sections.length > 0 ? (
-                <>
-                    <SectionsList 
-                        sections={filteredSections} 
-                        currentParva={currentParva} 
-                        currentSubParva={currentSubParva}
-                        currentPage={page}  // Pass the current page number
-                    />
-                    {total > pageSize && (
-                        <Pagination
+                {isLoading || isFetching ? (
+                    <div aria-live="polite" aria-busy="true">
+                        <SkeletonLoader count={10} />
+                    </div>
+                ) : sections.length > 0 ? (
+                    <>
+                        <SectionsList 
+                            sections={filteredSections} 
+                            currentParva={currentParva} 
+                            currentSubParva={currentSubParva}
                             currentPage={page}
-                            totalPages={totalPages}
-                            onPageChange={handlePageChange}
-                            baseUrl={`/mahaabhaaratham/parvas/${formatUrlString(currentParva)}/${formatUrlString(currentSubParva)}/page`}
                         />
-                    )}
-                </>
-            ) : (
-                <NoResults/>
-            )}
+                        {total > pageSize && (
+                            <Pagination
+                                currentPage={page}
+                                totalPages={totalPages}
+                                onPageChange={handlePageChange}
+                                baseUrl={`/mahaabhaaratham/parvas/${formatUrlString(currentParva)}/${formatUrlString(currentSubParva)}/page`}
+                                aria-label="Section pagination"
+                            />
+                        )}
+                    </>
+                ) : (
+                    <div aria-live="polite">
+                        <NoResults aria-label="No sections found" />
+                    </div>
+                )}
+            </div>
         </PageLayout>
     );
 }
@@ -135,17 +145,17 @@ const SectionsHeader = ({
     totalSections: number, 
     sectionRange: string 
 }) => (
-    <div className="text-center mb-12">
-        <div className="mb-8">
-            <h1 className="text-4xl font-bold text-custom-mint mb-2">
+    <header className="text-center mb-8 md:mb-12">
+        <div className="mb-4 md:mb-8">
+            <h1 className="text-3xl md:text-4xl font-bold text-custom-mint mb-2">
                 Sections
             </h1>
-            <div className="flex items-center justify-center gap-4 mt-4">
-                <div className="h-[2px] w-16 bg-linear-to-r from-transparent via-custom-skyBlue to-transparent"></div>
-                <span className="text-custom-skyBlue font-extralight text-2xl">अध्यायाः</span>
-                <div className="h-[2px] w-16 bg-linear-to-r from-transparent via-custom-skyBlue to-transparent"></div>
+            <div className="flex items-center justify-center gap-2 md:gap-4 mt-2 md:mt-4">
+                <div className="h-[2px] w-8 md:w-16 bg-linear-to-r from-transparent via-custom-skyBlue to-transparent"></div>
+                <span className="text-xl md:text-2xl text-custom-skyBlue font-extralight">अध्यायाः</span>
+                <div className="h-[2px] w-8 md:w-16 bg-linear-to-r from-transparent via-custom-skyBlue to-transparent"></div>
             </div>
-            <p className="text-custom-skyBlue mt-4 max-w-2xl mx-auto text-lg font-light">
+            <p className="text-custom-skyBlue mt-3 md:mt-4 max-w-2xl mx-auto text-base md:text-lg font-light px-4">
                 Explore <span className="font-semibold italic">{totalSections}</span> sections{' '}
                 {sectionRange && (
                     <span>
@@ -155,7 +165,7 @@ const SectionsHeader = ({
                 <span className="font-semibold italic">{subParvaName}</span>
             </p>
         </div>
-    </div>
+    </header>
 );
 
 // Get Section Range Helper
@@ -171,13 +181,17 @@ const getSectionRange = (sections: SectionsProps[]): string => {
 
 // Skeleton Loader Component
 const SkeletonLoader = ({ count }: { count: number }) => (
-    <div className="grid grid-cols-1 gap-4 max-w-4xl mx-auto px-4">
+    <div className="grid grid-cols-1 gap-3 md:gap-4 max-w-4xl mx-auto px-2 md:px-4" 
+         role="status" 
+         aria-label="Loading sections">
         {[...Array(count)].map((_, index) => (
             <div 
                 key={index}
-                className="bg-[#1f29374d] bg-opacity-30 p-6 animate-pulse h-24"
+                className="bg-[#1f29374d] bg-opacity-30 p-4 md:p-6 animate-pulse h-16 md:h-24 rounded"
+                aria-hidden="true"
             />
         ))}
+        <span className="sr-only">Loading sections...</span>
     </div>
 );
 
@@ -193,14 +207,23 @@ const SectionsList = ({
     currentSubParva: string,
     currentPage: number
 }) => (
-    <div className="grid grid-cols-1 gap-4 max-w-4xl mx-auto px-4">
+    <div 
+        id="sections-list"
+        className="grid grid-cols-1 gap-3 md:gap-4 max-w-4xl mx-auto px-2 md:px-4"
+        role="list"
+        aria-label={`Sections of ${formatParvaName(currentSubParva)}`}
+    >
         {sections.map((section, index) => (
             <SectionItem
                 key={index}
                 sectionNumber={section.section_number}
                 subParvaName={section.sub_parva_name}
                 href={`/mahaabhaaratham/parvas/${formatUrlString(currentParva)}/${formatUrlString(currentSubParva)}/${section.section_number}?page=1`}
-                currentPage={currentPage}  // Pass the current page to SectionItem
+                currentPage={currentPage}
+                aria-label={`Section ${section.section_number}`}
+                data-section-number={section.section_number}
+                data-parva-name={formatParvaName(currentParva)}
+                data-sub-parva-name={formatParvaName(currentSubParva)}
             />
         ))}
     </div>

@@ -21,15 +21,18 @@ const SearchSection = ({
   className = "mb-8 relative w-full max-w-sm mx-auto"
 }: SearchSectionProps) => {
   return (
-    <SearchComponent
-      searchQuery={searchQuery}
-      setSearchQuery={setSearchQuery}
-      placeholder={placeholder}
-      showResultCount={showResultCount}
-      resultCount={resultCount}
-      resultLabel={resultLabel}
-      className={className}
-    />
+    <div role="search">
+      <SearchComponent
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        placeholder={placeholder}
+        showResultCount={showResultCount}
+        resultCount={resultCount}
+        resultLabel={resultLabel}
+        className={className}
+        aria-label={`Search ${resultLabel}`}
+      />
+    </div>
   );
 };
 

@@ -15,7 +15,7 @@ import SearchSection from '@/components/layout/SearchSection'
 import CharacterContent from '@/components/characters/CharacterContent'
 
 // Import query hooks
-import { useGroupedCharacters, useSearchCharacters } from '@/app/hooks/useCharacterQueries'
+import { useGroupedCharacters, useSearchCharacters } from '@/hooks/useCharacterQueries'
 
 export default function Characters() {
   // TanStack Query hooks
@@ -124,6 +124,8 @@ export default function Characters() {
     setSelectedLetter(null)
   }
 
+  const searchResultsLength = searchResults?.length || 0
+
   return (
     <PageLayout>
       <BackButton 
@@ -140,21 +142,28 @@ export default function Characters() {
         searchQuery={searchQuery}
         setSearchQuery={handleSetSearchQuery}
         placeholder="Search characters..."
-        showResultCount={!!debouncedSearchQuery && !isSearching && !searchError && searchResults.length > 0}
-        resultCount={searchResults.length}
+        showResultCount={!!debouncedSearchQuery && !isSearching && !searchError && searchResultsLength > 0}
+        resultCount={searchResultsLength}
         resultLabel="character"
         className="mb-8 relative w-full max-w-sm mx-auto"
+        aria-label="Search Mahabharata characters"
+        data-search-active={!!debouncedSearchQuery}
       />
 
       {/* Alert Notification */}
       {showAlert && (
-        <div className="fixed top-4 right-4 z-50 animate-fade-in">
+        <div 
+          className="fixed top-4 right-4 z-50 animate-fade-in"
+          role="alert"
+          aria-live="assertive"
+        >
           <Alert className="bg-custom-sky-blue text-custom-navy border-none shadow-lg rounded-none">
             <AlertDescription className="flex items-center justify-between">
               <span>No characters found starting with <span className='font-bold'>&apos;{currentLetter}&apos;</span></span>
               <button 
                 onClick={() => setShowAlert(false)}
                 className="ml-4 hover:opacity-75 transition-opacity"
+                aria-label="Close notification"
               >
                 <X size={18} />
               </button>

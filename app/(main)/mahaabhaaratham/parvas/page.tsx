@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useParvas } from '@/app/hooks/useQueries';
+import { useParvas } from '@/hooks/useQueries';
 import SearchComponent from '@/components/SearchComponent';
 import NoResults from '@/components/NoResults';
 import ParvaGrid from '@/components/parvas/ParvaGrid';
@@ -48,15 +48,19 @@ export default function Parvas() {
                 showResultCount={true}
                 resultCount={filteredParvas.length}
                 resultLabel="Parva"
+                aria-label="Search for Parvas"
+                aria-controls="parva-grid"
             />
 
-            {isLoading ? (
-                <SkeletonLoader/>
-            ) : filteredParvas.length > 0 ? (
-                <ParvaGrid parvas={filteredParvas} />
-            ) : (
-                <NoResults/>
-            )}
+            <main id="parva-grid" aria-live="polite" aria-busy={isLoading}>
+                {isLoading ? (
+                    <SkeletonLoader count={9} />
+                ) : filteredParvas.length > 0 ? (
+                    <ParvaGrid parvas={filteredParvas} />
+                ) : (
+                    <NoResults />
+                )}
+            </main>
         </PageLayout>
     );
 }
