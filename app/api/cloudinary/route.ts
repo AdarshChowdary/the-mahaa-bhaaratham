@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import cloudinary from 'cloudinary';
 
+export const dynamic = 'force-dynamic';
+
 // Define interfaces for Cloudinary resources
 interface CloudinaryResource {
   secure_url: string;
