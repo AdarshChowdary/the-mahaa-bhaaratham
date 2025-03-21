@@ -89,7 +89,7 @@ const CharacterList = ({
               {hasMore && (
                 <button
                   onClick={() => handleViewAll(letter)}
-                  className="p-3 sm:p-4 text-left text-custom-sky-blue hover:bg-custom-sky-blue hover:text-custom-navy transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-custom-mint"
+                  className="p-3 sm:p-4 text-left text-custom-sky-blue hover:bg-custom-sky-blue hover:text-custom-navy transition-colors duration-300"
                   aria-label={`View all ${total} characters starting with ${letter}`}
                   data-letter={letter}
                 >

@@ -7,7 +7,7 @@ import Image from 'next/image'
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog'
 import { VisuallyHidden } from '@/components/ui/visually-hidden'
 import { Card } from '@/components/ui/card'
-import { useCharacterDetails, useCharacterImage } from '@/hooks/useCharacterQueries'
+import { useCharacterDetails } from '@/hooks/useCharacterQueries'
 import BackButton from '@/components/layout/BackButton'
 
 export default function CharacterDetails() {
@@ -23,13 +23,10 @@ export default function CharacterDetails() {
     error: queryError
   } = useCharacterDetails(characterName)
 
-  // TanStack Query hook for character image
-  const {
-    data: characterImage,
-    isLoading: imageLoading
-  } = useCharacterImage(character?.name || '')
-
   const error = queryError ? 'Failed to load character details' : null
+
+  const getCloudinaryImageUrl = (publicId:string) : string => 
+    `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload/${publicId}`
 
   if (isLoading) {
     return (
@@ -65,8 +62,8 @@ export default function CharacterDetails() {
     )
   }
 
-  // Determine the image to display
-  const displayImage = characterImage
+  // Determine the image to display directly from character object
+  const displayImage = getCloudinaryImageUrl(character.image) || null
 
   return (
     <div className="min-h-screen bg-linear-to-br from-custom-navy via-custom-navy/95 to-custom-navy text-custom-mint p-4 sm:p-6 md:p-8 relative overflow-hidden">
@@ -105,11 +102,7 @@ export default function CharacterDetails() {
                   aria-label={`View full image of ${character.name}`}
                   data-character-name={character.name}                  
                 >
-                  {imageLoading ? (
-                    <div className="w-full h-full bg-custom-navy/50 backdrop-blur-xs flex items-center justify-center animate-pulse" aria-label="Loading character image">
-                      <UserCircle className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 text-custom-sky-blue" aria-hidden="true"/>
-                    </div>
-                  ) : displayImage ? (
+                  {displayImage ? (
                     <Image 
                       src={displayImage}
                       alt={character.name}

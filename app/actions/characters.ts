@@ -92,6 +92,7 @@ export async function getCharactersByLetter(letter: string): Promise<Character[]
 interface CharacterDetails {
   id: number;
   name: string;
+  image: string;
   description: string;
   parents: string;
   wives?: string;
@@ -111,6 +112,7 @@ export async function getCharacterDetails(name: string): Promise<CharacterDetail
       SELECT 
         c.id,
         c.name,
+        c.image,
         c.description,
         c.parents,
         c.wives,
